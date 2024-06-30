@@ -23,12 +23,12 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Provider provider;
 
-	private Long authId;
+	private String authId;
 	private String name;
 	private String code;
 
 	@Builder
-	public Member(Provider provider, Long authId, String name, String code) {
+	public Member(Provider provider, String authId, String name, String code) {
 		this.provider = provider;
 		this.authId = authId;
 		this.name = name;

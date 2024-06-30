@@ -26,7 +26,7 @@ public class AuthService {
 		return loginMember;
 	}
 
-	private Member register(Provider provider, Long authId) {
+	private Member register(Provider provider, String authId) {
 		String code = generateCode(provider);
 		Member member = Member.builder()
 			.provider(provider)
