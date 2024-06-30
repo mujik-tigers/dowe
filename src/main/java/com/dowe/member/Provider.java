@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Provider {
 
-	KAKAO("K");
+	GOOGLE("G"), KAKAO("K");
 
 	private final String signature;
 
