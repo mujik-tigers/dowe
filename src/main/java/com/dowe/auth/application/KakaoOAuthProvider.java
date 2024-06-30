@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoOAuthProvider {
 
-	private final KakaoOAuthProperties property;
+	private final KakaoOAuthProperties properties;
 	private final RestClient restClient = RestClient.create();
 
 	public Long authenticate(String authorizationCode) {
@@ -29,10 +29,10 @@ public class KakaoOAuthProvider {
 	private KakaoAccessToken requestAccessToken(String authorizationCode) {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
-		body.add("client_id", property.getClientId());
-		body.add("redirect_uri", property.getRedirectUri());
+		body.add("client_id", properties.getClientId());
+		body.add("redirect_uri", properties.getRedirectUri());
 		body.add("code", authorizationCode);
-		body.add("client_secret", property.getClientSecret());
+		body.add("client_secret", properties.getClientSecret());
 
 		return restClient.post()
 			.uri("https://kauth.kakao.com/oauth/token")
