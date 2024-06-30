@@ -14,14 +14,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final KakaoOAuthProvider kakaoOAuthProvider;
+	private final OAuthProvider authProvider;
 	private final MemberRepository memberRepository;
 
-	public LoginMember loginByKakao(String authorizationCode) {
-		Long kakaoUserId = kakaoOAuthProvider.authenticate(authorizationCode);
-		LoginMember loginMember = memberRepository.findByProvider(Provider.KAKAO, kakaoUserId)
+	public LoginMember login(Provider provider, String authorizationCode) {
+		String authId = authProvider.authenticate(provider, authorizationCode);
+		LoginMember loginMember = memberRepository.findByProvider(provider, authId)
 			.map(LoginMember::forReturning)
-			.orElseGet(() -> LoginMember.forFirstTime(register(Provider.KAKAO, kakaoUserId)));
+			.orElseGet(() -> LoginMember.forFirstTime(register(provider, authId)));
 
 		return loginMember;
 	}
