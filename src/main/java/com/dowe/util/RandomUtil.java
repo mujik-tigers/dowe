@@ -13,9 +13,9 @@ public final class RandomUtil {
 	 * using a-z A-Z 0-9
 	 */
 	public static String generateRandomCode() {
-		String randomString = UUID.randomUUID().toString().replaceAll("-", "");
+		String randomString = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
 
-		return randomString.substring(0, 10);
+		return randomString.substring(0, 4);
 	}
 
 }
