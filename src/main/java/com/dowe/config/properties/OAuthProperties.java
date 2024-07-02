@@ -15,23 +15,23 @@ public class OAuthProperties {
 
 	private final Map<Provider, Properties> properties;
 
-	public String getClientId(Provider provider) {
+	public String getClientIdOf(Provider provider) {
 		return properties.get(provider).clientId;
 	}
 
-	public String getClientSecret(Provider provider) {
+	public String getClientSecretOf(Provider provider) {
 		return properties.get(provider).clientSecret;
 	}
 
-	public String getRedirectUri(Provider provider) {
+	public String getRedirectUriOf(Provider provider) {
 		return properties.get(provider).redirectUri;
 	}
 
-	public String getTokenRequestUri(Provider provider) {
+	public String getTokenRequestUriOf(Provider provider) {
 		return properties.get(provider).tokenRequestUri;
 	}
 
-	public String getResourceRequestUri(Provider provider) {
+	public String getResourceRequestUriOf(Provider provider) {
 		return properties.get(provider).resourceRequestUri;
 	}
 

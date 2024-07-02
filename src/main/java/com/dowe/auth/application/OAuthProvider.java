@@ -34,13 +34,13 @@ public class OAuthProvider {
 	private AccessToken requestAccessToken(Provider provider, String authorizationCode) {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", AUTHORIZATION_CODE);
-		body.add("client_id", properties.getClientId(provider));
-		body.add("redirect_uri", properties.getRedirectUri(provider));
+		body.add("client_id", properties.getClientIdOf(provider));
+		body.add("redirect_uri", properties.getRedirectUriOf(provider));
 		body.add("code", authorizationCode);
-		body.add("client_secret", properties.getClientSecret(provider));
+		body.add("client_secret", properties.getClientSecretOf(provider));
 
 		return restClient.post()
-			.uri(properties.getTokenRequestUri(provider))
+			.uri(properties.getTokenRequestUriOf(provider))
 			.header(HttpHeaders.CONTENT_TYPE, X_WWW_FORM_URLENCODED_CHARSET_UTF_8)
 			.body(body)
 			.retrieve()
@@ -50,7 +50,7 @@ public class OAuthProvider {
 
 	private UserResource requestUserId(Provider provider, String accessToken) {
 		return restClient.get()
-			.uri(properties.getResourceRequestUri(provider))
+			.uri(properties.getResourceRequestUriOf(provider))
 			.header(HttpHeaders.AUTHORIZATION, BEARER + accessToken)
 			.header(HttpHeaders.CONTENT_TYPE, X_WWW_FORM_URLENCODED_CHARSET_UTF_8)
 			.retrieve()
