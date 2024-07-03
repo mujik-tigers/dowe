@@ -1,12 +1,13 @@
 package com.dowe.auth.application;
 
+import static com.dowe.util.RandomUtil.*;
+
 import org.springframework.stereotype.Service;
 
-import com.dowe.auth.dto.LoginMember;
+import com.dowe.auth.dto.LoginData;
 import com.dowe.member.Member;
 import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
-import com.dowe.util.RandomUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,30 +17,37 @@ public class AuthService {
 
 	private final OAuthProvider authProvider;
 	private final MemberRepository memberRepository;
+	private final TokenManager tokenManager;
 
-	public LoginMember login(Provider provider, String authorizationCode) {
+	public LoginData login(Provider provider, String authorizationCode) {
 		String authId = authProvider.authenticate(provider, authorizationCode);
-		LoginMember loginMember = memberRepository.findByProvider(provider, authId)
-			.map(LoginMember::forReturning)
-			.orElseGet(() -> LoginMember.forFirstTime(register(provider, authId)));
 
-		return loginMember;
+		return memberRepository.findByProvider(provider, authId)
+			.map(member -> LoginData.from(member, tokenManager.issue(member.getId()), false))
+			.orElseGet(() -> {
+				Member member = register(provider, authId);
+				return LoginData.from(member, tokenManager.issue(member.getId()), true);
+			});
 	}
 
 	private Member register(Provider provider, String authId) {
-		String code = generateCode(provider);
 		Member member = Member.builder()
 			.provider(provider)
 			.authId(authId)
-			.name("iam" + code)
-			.code(code)
+			.name(generateMemberName())
+			.code(generateUniqueMemberCode(provider))
 			.build();
 
-		return memberRepository.save(member);
+		return memberRepository.save(member);        // TODO: (provider, authId), (code) 유니크 제약조건 -> 예외 발생 시 그냥 다시 로그인 하라고 예외 처리
 	}
 
-	private String generateCode(Provider provider) {
-		return provider.getSignature() + RandomUtil.generateRandomCode();
+	private String generateUniqueMemberCode(Provider provider) {
+		String code = generateMemberCode(provider);
+		while (memberRepository.existsByCode(code)) {
+			code = generateMemberCode(provider);
+		}
+
+		return code;
 	}
 
 }
