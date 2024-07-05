@@ -10,7 +10,10 @@ import com.dowe.auth.MemberToken;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
+import com.dowe.exception.ExpiredTokenException;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,6 +41,18 @@ public class TokenManager {
 		memberTokenRepository.save(memberToken);
 
 		return new TokenPair(accessToken, refreshToken);
+	}
+
+	public Long parse(String token) {
+		try {
+			Claims claims = Jwts.parser()
+				.setSigningKey(jwtProperties.getSecretKey())
+				.parseClaimsJws(token)
+				.getBody();
+			return claims.get(MEMBER_ID, Long.class);
+		} catch (ExpiredJwtException e) {
+			throw new ExpiredTokenException();
+		}
 	}
 
 	private String generateJwt(Date now, Date expiredAt, Long memberId) {
