@@ -1,0 +1,59 @@
+[[Auth-API]]
+== Auth API
+
+[[signup-success]]
+=== 회원가입 성공
+
+==== HTTP Request
+
+include::{snippets}/signup-success/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/signup-success/http-response.adoc[]
+include::{snippets}/signup-success/response-fields.adoc[]
+
+{nbsp}
+
+[[login-success]]
+=== 로그인 성공
+
+==== HTTP Request
+
+include::{snippets}/login-success/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/login-success/http-response.adoc[]
+include::{snippets}/login-success/response-fields.adoc[]
+
+{nbsp}
+
+[[login-fail-invalid-provider]]
+=== 로그인 실패 : 지원하지 않는 OAuth Provider
+
+==== HTTP Request
+
+include::{snippets}/login-fail-invalid-provider/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/login-fail-invalid-provider/http-response.adoc[]
+include::{snippets}/login-fail-invalid-provider/response-fields.adoc[]
+
+{nbsp}
+
+[[login-fail-invalid-authorization-code]]
+=== 로그인 실패 : 유효하지 않은 인증 코드
+
+==== HTTP Request
+
+include::{snippets}/login-fail-invalid-authorization-code/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/login-fail-invalid-authorization-code/http-response.adoc[]
+include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
+
+{nbsp}
+

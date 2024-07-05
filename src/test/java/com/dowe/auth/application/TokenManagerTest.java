@@ -14,7 +14,7 @@ import com.dowe.auth.MemberToken;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
-import com.dowe.exception.ExpiredTokenException;
+import com.dowe.exception.auth.ExpiredTokenException;
 
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;

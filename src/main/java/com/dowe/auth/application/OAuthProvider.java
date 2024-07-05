@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClient;
 import com.dowe.auth.dto.AccessToken;
 import com.dowe.auth.dto.UserResource;
 import com.dowe.config.properties.OAuthProperties;
-import com.dowe.exception.InvalidAuthorizationCodeException;
+import com.dowe.exception.auth.InvalidAuthorizationCodeException;
 import com.dowe.member.Provider;
 
 import lombok.RequiredArgsConstructor;
