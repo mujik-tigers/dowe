@@ -1,6 +1,9 @@
 package com.dowe.auth.application;
 
+import static com.dowe.util.AppConstants.*;
+
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -9,6 +12,7 @@ import org.springframework.web.client.RestClient;
 import com.dowe.auth.dto.AccessToken;
 import com.dowe.auth.dto.UserResource;
 import com.dowe.config.properties.OAuthProperties;
+import com.dowe.exception.InvalidAuthorizationCodeException;
 import com.dowe.member.Provider;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class OAuthProvider {
-
-	private static final String AUTHORIZATION_CODE = "authorization_code";
-	private static final String BEARER = "Bearer ";
-	private static final String X_WWW_FORM_URLENCODED_CHARSET_UTF_8 = "application/x-www-form-urlencoded;charset=utf-8";
 
 	private final OAuthProperties properties;
 	private final RestClient restClient;
@@ -44,6 +44,9 @@ public class OAuthProvider {
 			.header(HttpHeaders.CONTENT_TYPE, X_WWW_FORM_URLENCODED_CHARSET_UTF_8)
 			.body(body)
 			.retrieve()
+			.onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+				throw new InvalidAuthorizationCodeException();
+			})
 			.toEntity(AccessToken.class)
 			.getBody();
 	}

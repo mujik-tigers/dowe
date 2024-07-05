@@ -3,6 +3,7 @@ package com.dowe.auth.application;
 import static com.dowe.util.RandomUtil.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dowe.auth.dto.LoginData;
 import com.dowe.member.Member;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
 	private final OAuthProvider authProvider;
