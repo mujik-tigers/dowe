@@ -20,7 +20,7 @@ jobs:
       mysql:
         image: mysql:8.0.35
         env:
-          MYSQL_DATABASE: test_database
+          MYSQL_DATABASE: dowe
           MYSQL_USER: test
           MYSQL_PASSWORD: 1234
           MYSQL_ROOT_PASSWORD: 1234
@@ -44,6 +44,8 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
           touch ./src/main/resources/application-release.yml
           echo "${{ secrets.APPLICATION_RELEASE }}" > ./src/main/resources/application-release.yml
+          touch ./src/main/resources/application-test.yml
+          echo "${{ secrets.APPLICATION_TEST }}" > ./src/main/resources/application-test.yml
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
