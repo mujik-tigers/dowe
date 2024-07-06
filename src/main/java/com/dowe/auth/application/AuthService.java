@@ -4,6 +4,7 @@ import static com.dowe.util.RandomUtil.*;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dowe.auth.dto.LoginData;
 import com.dowe.exception.MemberRegisterException;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
 	private final OAuthProvider authProvider;
