@@ -15,5 +15,3 @@ CREATE TABLE `member_token` (
   `member_id` bigint PRIMARY KEY,
   `refresh_token` varchar(255)
 );
-
-ALTER TABLE `member_token` ADD FOREIGN KEY (`member_id`) REFERENCES `member` (`id`);

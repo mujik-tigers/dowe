@@ -19,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import com.dowe.IntegrationTestSupport;
 import com.dowe.auth.dto.AccessToken;
 import com.dowe.auth.dto.UserResource;
-import com.dowe.config.properties.OAuthProperties;
 import com.dowe.exception.auth.InvalidAuthorizationCodeException;
 import com.dowe.member.Provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +27,6 @@ class OAuthProviderTest extends IntegrationTestSupport {
 
 	@Autowired
 	private OAuthProvider oAuthProvider;
-
-	@Autowired
-	private OAuthProperties properties;
 
 	@Autowired
 	private ObjectMapper objectMapper;

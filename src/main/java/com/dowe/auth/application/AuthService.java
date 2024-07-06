@@ -12,13 +12,11 @@ import com.dowe.member.Member;
 import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Transactional
 public class AuthService {
 
 	private final OAuthProvider authProvider;

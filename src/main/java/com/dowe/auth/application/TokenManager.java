@@ -4,7 +4,7 @@ import static com.dowe.util.AppConstants.*;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.dowe.auth.MemberToken;
 import com.dowe.auth.dto.TokenPair;
@@ -19,7 +19,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class TokenManager {
 

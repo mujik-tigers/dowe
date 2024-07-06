@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Date;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,11 @@ class TokenManagerTest extends IntegrationTestSupport {
 
 	@Autowired
 	private JwtProperties jwtProperties;
+
+	@AfterEach
+	void clear() {
+		memberTokenRepository.deleteAllInBatch();
+	}
 
 	@Test
 	@DisplayName("accessToken과 refreshToken이 잘 발급된다")
@@ -74,6 +80,7 @@ class TokenManagerTest extends IntegrationTestSupport {
 		String previousRefreshToken = memberTokenRepository.findAll().get(0).getRefreshToken();
 
 		// when
+		Thread.sleep(1000);
 		TokenPair issue = tokenManager.issue(memberId);
 
 		// then
