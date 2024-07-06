@@ -2,9 +2,12 @@ package com.dowe.auth.application;
 
 import static com.dowe.util.RandomUtil.*;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.dowe.auth.dto.LoginData;
+import com.dowe.exception.CustomException;
+import com.dowe.exception.ErrorType;
 import com.dowe.member.Member;
 import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
@@ -38,7 +41,12 @@ public class AuthService {
 			.code(generateUniqueMemberCode(provider))
 			.build();
 
-		return memberRepository.save(member);        // TODO: (provider, authId), (code) 유니크 제약조건 -> 예외 발생 시 그냥 다시 로그인 하라고 예외 처리
+		// TODO: 로그인 도중에 문제가 발생한 경우 클라이언트에게 재요청을 요구하지 않고 서버에서 재시도하도록 한다
+		try {
+			return memberRepository.save(member);
+		} catch (DataIntegrityViolationException exception) {
+			throw new CustomException(ErrorType.LOGIN_FAILED);
+		}
 	}
 
 	private String generateUniqueMemberCode(Provider provider) {
