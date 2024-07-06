@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dowe.IntegrationTestSupport;
 import com.dowe.auth.dto.LoginData;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
-import com.dowe.exception.CustomException;
-import com.dowe.exception.ErrorType;
+import com.dowe.exception.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
@@ -89,8 +88,6 @@ class AuthServiceTest extends IntegrationTestSupport {
 		String authorizationCode = "test authorization code";
 		String authId = "test auth id";
 
-		doReturn(authId).when(authProvider).authenticate(provider, authorizationCode);
-
 		Member member = Member.builder()
 			.provider(provider)
 			.authId(authId)
@@ -99,12 +96,12 @@ class AuthServiceTest extends IntegrationTestSupport {
 			.build();
 		memberRepository.save(member);
 
+		doReturn(authId).when(authProvider).authenticate(provider, authorizationCode);
 		doReturn(Optional.empty()).when(memberRepository).findByProvider(provider, authId);
 
 		// when / then
 		assertThatThrownBy(() -> authService.login(provider, authorizationCode))
-			.isInstanceOf(CustomException.class)
-			.hasMessage(ErrorType.LOGIN_FAILED.getMessage());
+			.isInstanceOf(MemberRegisterException.class);
 	}
 
 }
