@@ -2,16 +2,20 @@ package com.dowe.auth.application;
 
 import static com.dowe.util.RandomUtil.*;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.dowe.auth.dto.LoginData;
+import com.dowe.exception.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -22,6 +26,10 @@ public class AuthService {
 	public LoginData login(Provider provider, String authorizationCode) {
 		String authId = authProvider.authenticate(provider, authorizationCode);
 
+		return generateLoginData(provider, authId);
+	}
+
+	public LoginData generateLoginData(Provider provider, String authId) {
 		return memberRepository.findByProvider(provider, authId)
 			.map(member -> LoginData.from(member, tokenManager.issue(member.getId()), false))
 			.orElseGet(() -> {
@@ -38,7 +46,11 @@ public class AuthService {
 			.code(generateUniqueMemberCode(provider))
 			.build();
 
-		return memberRepository.save(member);        // TODO: (provider, authId), (code) 유니크 제약조건 -> 예외 발생 시 그냥 다시 로그인 하라고 예외 처리
+		try {
+			return memberRepository.save(member);
+		} catch (DataIntegrityViolationException exception) {
+			throw new MemberRegisterException(provider, authId);
+		}
 	}
 
 	private String generateUniqueMemberCode(Provider provider) {
