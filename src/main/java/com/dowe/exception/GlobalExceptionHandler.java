@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.dowe.auth.application.AuthService;
 import com.dowe.util.api.ApiResponse;
 import com.dowe.util.api.ResponseResult;
 
@@ -21,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+	private final AuthService authService;
 
 	@ExceptionHandler(BindException.class)
 	public ResponseEntity<ApiResponse<Object>> handleBindException(BindException exception) {
@@ -49,6 +52,12 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity.status(customException.getStatus())
 			.body(ApiResponse.of(customException.getStatus(), ResponseResult.EXCEPTION_OCCURRED, List.of(error)));
+	}
+
+	@ExceptionHandler(MemberRegisterException.class)
+	public ResponseEntity<ApiResponse<Object>> handleMemberRegisterException(MemberRegisterException exception) {
+		return ResponseEntity.ok()
+			.body(ApiResponse.ok(ResponseResult.LOGIN_SUCCESS, authService.generateLoginData(exception.getProvider(), exception.getAuthId())));
 	}
 
 }
