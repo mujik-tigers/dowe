@@ -7,6 +7,7 @@
 ==== HTTP Request
 
 include::{snippets}/signup-success/http-request.adoc[]
+include::{snippets}/signup-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
@@ -21,6 +22,7 @@ include::{snippets}/signup-success/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/login-success/http-request.adoc[]
+include::{snippets}/login-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
@@ -35,6 +37,7 @@ include::{snippets}/login-success/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/login-fail-invalid-provider/http-request.adoc[]
+include::{snippets}/login-fail-invalid-provider/path-parameters.adoc[]
 
 ==== HTTP Response
 
@@ -49,6 +52,7 @@ include::{snippets}/login-fail-invalid-provider/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/login-fail-invalid-authorization-code/http-request.adoc[]
+include::{snippets}/login-fail-invalid-authorization-code/path-parameters.adoc[]
 
 ==== HTTP Response
 

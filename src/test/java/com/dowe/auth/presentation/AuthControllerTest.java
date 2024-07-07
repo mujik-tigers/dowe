@@ -155,6 +155,9 @@ class AuthControllerTest extends RestDocsSupport {
 			.andDo(document("login-fail-invalid-provider",
 				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
+				pathParameters(
+					parameterWithName("provider").description("OAuth Provider")
+				),
 				responseFields(
 					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
 					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -190,6 +193,9 @@ class AuthControllerTest extends RestDocsSupport {
 			.andDo(document("login-fail-invalid-authorization-code",
 				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
+				pathParameters(
+					parameterWithName("provider").description("OAuth Provider")
+				),
 				responseFields(
 					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
 					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
