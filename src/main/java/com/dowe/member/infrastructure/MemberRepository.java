@@ -1,9 +1,12 @@
-package com.dowe.member;
+package com.dowe.member.infrastructure;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.dowe.member.Member;
+import com.dowe.member.Provider;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 

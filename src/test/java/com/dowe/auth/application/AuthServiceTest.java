@@ -18,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dowe.IntegrationTestSupport;
 import com.dowe.auth.dto.LoginData;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
-import com.dowe.exception.MemberRegisterException;
+import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
-import com.dowe.member.MemberRepository;
 import com.dowe.member.Provider;
+import com.dowe.member.infrastructure.MemberRepository;
 
 class AuthServiceTest extends IntegrationTestSupport {
 

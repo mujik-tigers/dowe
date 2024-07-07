@@ -1,4 +1,4 @@
-package com.dowe.member;
+package com.dowe.member.infrastructure;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.dowe.IntegrationTestSupport;
+import com.dowe.member.Member;
+import com.dowe.member.Provider;
 
 class MemberRepositoryTest extends IntegrationTestSupport {
 

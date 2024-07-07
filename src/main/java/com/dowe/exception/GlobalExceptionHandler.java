@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.dowe.auth.application.AuthService;
+import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.util.api.ApiResponse;
 import com.dowe.util.api.ResponseResult;
 
