@@ -84,8 +84,7 @@ class GlobalExceptionHandlerTest {
 					String response = resultActions.andReturn().getResponse().getContentAsString(Charsets.UTF_8);
 					JsonNode rootNode = objectMapper.readTree(response);
 					LoginData loginData = objectMapper.treeToValue(rootNode.get("data"), LoginData.class);
-					System.out.println(response);
-					System.out.println(loginData.isFirstTime());
+
 					if (loginData.isFirstTime()) {
 						firstTimeTrueCount.incrementAndGet();
 					} else {
