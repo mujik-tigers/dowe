@@ -3,7 +3,12 @@ package com.dowe.auth.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -82,26 +87,45 @@ class AuthServiceTest extends IntegrationTestSupport {
 
 	@Test
 	@DisplayName("이미 등록된 사용자를 또 등록하려고 하는 경우 예외가 발생한다")
-	void testRegister() {
+	void testRegister() throws InterruptedException {
 		// given
+		AtomicInteger successCount = new AtomicInteger(0);
+		AtomicInteger failureCount = new AtomicInteger(0);
+
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
-		String authId = "test auth id";
-
-		Member member = Member.builder()
-			.provider(provider)
-			.authId(authId)
-			.name("name")
-			.code("T1234")
-			.build();
-		memberRepository.save(member);
+		String authId = "123456789";
 
 		doReturn(authId).when(authProvider).authenticate(provider, authorizationCode);
 		doReturn(Optional.empty()).when(memberRepository).findByProvider(provider, authId);
 
-		// when / then
-		assertThatThrownBy(() -> authService.login(provider, authorizationCode))
-			.isInstanceOf(MemberRegisterException.class);
+		// when
+		int threadCount = 5;
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		CountDownLatch latch = new CountDownLatch(threadCount);
+
+		for (int i = 0; i < threadCount; i++) {
+			executorService.submit(() -> {
+				try {
+					authService.login(provider, authorizationCode);
+					successCount.incrementAndGet();
+				} catch (MemberRegisterException exception) {
+					failureCount.incrementAndGet();
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+
+		latch.await();
+		executorService.shutdown();
+
+		List<Member> members = memberRepository.findAll();
+
+		// then
+		assertThat(members).hasSize(1);
+		assertThat(successCount.get()).isEqualTo(1);
+		assertThat(failureCount.get()).isEqualTo(threadCount - 1);
 	}
 
 }
