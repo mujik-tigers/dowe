@@ -44,8 +44,8 @@ class AuthServiceTest extends IntegrationTestSupport {
 	}
 
 	@Test
-	@DisplayName("처음 로그인한 경우 isFirstTime 값은 true이다")
-	void testIsFirstTime1() {
+	@DisplayName("처음 로그인한 경우 firstTime 값은 true이다")
+	void testFirstTime1() {
 		// given
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
@@ -61,8 +61,8 @@ class AuthServiceTest extends IntegrationTestSupport {
 	}
 
 	@Test
-	@DisplayName("다시 로그인한 경우 isFirstTime 값은 false이다")
-	void testIsFirstTime2() {
+	@DisplayName("다시 로그인한 경우 firstTime 값은 false이다")
+	void testFirstTime2() {
 		// given
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
@@ -89,9 +89,6 @@ class AuthServiceTest extends IntegrationTestSupport {
 	@DisplayName("이미 등록된 사용자를 또 등록하려고 하는 경우 예외가 발생한다")
 	void testRegister() throws InterruptedException {
 		// given
-		AtomicInteger successCount = new AtomicInteger(0);
-		AtomicInteger failureCount = new AtomicInteger(0);
-
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
 		String authId = "123456789";
@@ -103,6 +100,9 @@ class AuthServiceTest extends IntegrationTestSupport {
 		int threadCount = 5;
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		CountDownLatch latch = new CountDownLatch(threadCount);
+
+		AtomicInteger successCount = new AtomicInteger(0);
+		AtomicInteger failureCount = new AtomicInteger(0);
 
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
