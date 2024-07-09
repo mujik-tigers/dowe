@@ -19,8 +19,9 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final MemberCodeStorage memberCodeStorage;
 
-	public Optional<Member> findByProvider(Provider provider, String authId) {
+	public Optional<Member> findByProvider(Provider provider, String authId) {        // TODO: findMemberBy 메서드 명 변경 ㄱㅊ? -> yeonise의 허락
 		return memberRepository.findByProvider(provider, authId);
 	}
 
@@ -41,7 +42,7 @@ public class MemberService {
 
 	private String generateUniqueMemberCode(Provider provider) {
 		String code = generateMemberCode(provider);
-		while (memberRepository.existsByCode(code)) {
+		while (!memberCodeStorage.saveMemberCodeIfUnique(code)) {
 			code = generateMemberCode(provider);
 		}
 

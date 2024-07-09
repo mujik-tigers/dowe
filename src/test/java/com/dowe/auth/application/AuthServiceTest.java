@@ -1,5 +1,6 @@
 package com.dowe.auth.application;
 
+import static com.dowe.util.AppConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -10,10 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.dowe.IntegrationTestSupport;
 import com.dowe.auth.dto.LoginData;
@@ -37,10 +39,14 @@ class AuthServiceTest extends IntegrationTestSupport {
 	@Autowired
 	private MemberRepository memberRepository;
 
-	@AfterEach
+	@Autowired
+	private StringRedisTemplate redisTemplate;
+
+	@BeforeEach
 	void clean() {
 		memberTokenRepository.deleteAllInBatch();
 		memberRepository.deleteAllInBatch();
+		redisTemplate.delete(MEMBER_CODE_SET);
 	}
 
 	@Test
