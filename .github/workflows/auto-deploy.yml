@@ -21,6 +21,13 @@ jobs:
     environment: production
 
     services:
+      redis:
+        image: redis/redis-stack-server:latest
+        ports:
+          - 6380:6379
+        env:
+          REDIS_PASSWORD: 1234
+
       mysql:
         image: mysql:8.0.35
         env:
