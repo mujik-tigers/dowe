@@ -32,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(accessTokenInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/docs/index.html");
+			.excludePathPatterns("/docs/index.html", "/oauth/**");
 	}
 
 	@Override
