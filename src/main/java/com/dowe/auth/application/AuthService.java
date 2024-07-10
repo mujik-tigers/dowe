@@ -26,7 +26,7 @@ public class AuthService {
 	}
 
 	public LoginData generateLoginData(Provider provider, String authId) {
-		return memberService.findByProvider(provider, authId)
+		return memberService.findBy(provider, authId)
 			.map(member -> LoginData.from(member, tokenManager.issue(member.getId()), false))
 			.orElseGet(() -> {
 				Member member = memberService.register(provider, authId);

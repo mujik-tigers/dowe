@@ -21,7 +21,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberCodeStorage memberCodeStorage;
 
-	public Optional<Member> findByProvider(Provider provider, String authId) {        // TODO: findMemberBy 메서드 명 변경 ㄱㅊ? -> yeonise의 허락
+	public Optional<Member> findBy(Provider provider, String authId) {
 		return memberRepository.findByProvider(provider, authId);
 	}
 
