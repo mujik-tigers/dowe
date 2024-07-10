@@ -6,7 +6,7 @@ CREATE TABLE `member` (
   `provider` varchar(10),
   `auth_id` varchar(255),
   `name` varchar(25),
-  `code` varchar(10) UNIQUE
+  `code` varchar(10)
 );
 
 CREATE UNIQUE INDEX provider_auth_id ON `member` (`provider`, `auth_id`);

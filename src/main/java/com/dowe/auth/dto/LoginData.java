@@ -10,15 +10,15 @@ public class LoginData {
 
 	private final String code;
 	private final String name;
-	private final boolean isFirstTime;
+	private final boolean firstTime;
 	private final String accessToken;
 	private final String refreshToken;
 
 	@Builder
-	public LoginData(String code, String name, boolean isFirstTime, String accessToken, String refreshToken) {
+	public LoginData(String code, String name, boolean firstTime, String accessToken, String refreshToken) {
 		this.code = code;
 		this.name = name;
-		this.isFirstTime = isFirstTime;
+		this.firstTime = firstTime;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 	}
@@ -27,7 +27,7 @@ public class LoginData {
 		return LoginData.builder()
 			.code(member.getCode())
 			.name(member.getName())
-			.isFirstTime(isFirstTime)
+			.firstTime(isFirstTime)
 			.accessToken(tokens.getAccessToken())
 			.refreshToken(tokens.getRefreshToken())
 			.build();
