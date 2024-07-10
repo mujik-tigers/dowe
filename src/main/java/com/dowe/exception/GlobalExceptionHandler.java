@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.dowe.auth.application.AuthService;
+import com.dowe.exception.auth.TokenException;
 import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.util.api.ApiResponse;
 import com.dowe.util.api.ResponseResult;
@@ -59,6 +60,17 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Object>> handleMemberRegisterException(MemberRegisterException exception) {
 		return ResponseEntity.ok()
 			.body(ApiResponse.ok(ResponseResult.LOGIN_SUCCESS, authService.generateLoginData(exception.getProvider(), exception.getAuthId())));
+	}
+
+	@ExceptionHandler(TokenException.class)
+	public ResponseEntity<ApiResponse<Object>> handleTokenException(TokenException exception) {
+		Map<String, String> error = new LinkedHashMap<>(2);
+		error.put("type", exception.getClass().getSimpleName());
+		error.put("message", exception.getMessage());
+		error.put("needTokenType", exception.getNeedTokenType().name());
+
+		return ResponseEntity.status(exception.getStatus())
+			.body(ApiResponse.of(exception.getStatus(), ResponseResult.EXCEPTION_OCCURRED, List.of(error)));
 	}
 
 }

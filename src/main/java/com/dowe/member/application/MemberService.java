@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
@@ -15,6 +16,7 @@ import com.dowe.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -25,6 +27,7 @@ public class MemberService {
 		return memberRepository.findByProvider(provider, authId);
 	}
 
+	@Transactional
 	public Member register(Provider provider, String authId) {
 		Member member = Member.builder()
 			.provider(provider)
