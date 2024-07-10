@@ -1,4 +1,4 @@
-package com.dowe.exception;
+package com.dowe.exception.member;
 
 import com.dowe.member.Provider;
 

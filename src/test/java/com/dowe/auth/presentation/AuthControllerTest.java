@@ -43,7 +43,7 @@ class AuthControllerTest extends RestDocsSupport {
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
 			.refreshToken(
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
-			.isFirstTime(true)
+			.firstTime(true)
 			.build();
 
 		given(authService.login(provider, authorizationCode))
@@ -96,7 +96,7 @@ class AuthControllerTest extends RestDocsSupport {
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
 			.refreshToken(
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
-			.isFirstTime(false)
+			.firstTime(false)
 			.build();
 
 		given(authService.login(provider, authorizationCode))
