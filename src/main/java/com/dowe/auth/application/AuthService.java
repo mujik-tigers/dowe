@@ -1,9 +1,12 @@
 package com.dowe.auth.application;
 
+import static com.dowe.util.AppConstants.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dowe.auth.dto.LoginData;
+import com.dowe.auth.dto.TokenPair;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
 import com.dowe.member.application.MemberService;
@@ -32,6 +35,12 @@ public class AuthService {
 				Member member = memberService.register(provider, authId);
 				return LoginData.from(member, tokenManager.issue(member.getId()), true);
 			});
+	}
+
+	public TokenPair refresh(String authorizationHeader) {
+		String refreshToken = authorizationHeader.substring(BEARER.length());
+
+		return tokenManager.refresh(refreshToken);
 	}
 
 }

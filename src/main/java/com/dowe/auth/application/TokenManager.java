@@ -1,5 +1,6 @@
 package com.dowe.auth.application;
 
+import static com.dowe.exception.ErrorType.*;
 import static com.dowe.util.AppConstants.*;
 
 import java.util.Date;
@@ -10,7 +11,7 @@ import com.dowe.auth.MemberToken;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
-import com.dowe.exception.auth.ExpiredTokenException;
+import com.dowe.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -51,8 +52,20 @@ public class TokenManager {
 				.getBody();
 			return claims.get(MEMBER_ID, Long.class);
 		} catch (ExpiredJwtException e) {
-			throw new ExpiredTokenException();
+			throw new InvalidTokenException(EXPIRED_TOKEN);
 		}
+	}
+
+	public TokenPair refresh(String refreshToken) {
+		Long memberId = parse(refreshToken);
+		MemberToken memberToken = memberTokenRepository.findById(memberId)
+			.orElseThrow(RuntimeException::new);
+
+		if (memberToken.doesNotMatch(refreshToken)) {
+			throw new InvalidTokenException(INVALID_TOKEN);
+		}
+
+		return issue(memberId);
 	}
 
 	private String generateJwt(Date now, Date expiredAt, Long memberId) {

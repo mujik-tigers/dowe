@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.dowe.config.converter.ProviderConverter;
 import com.dowe.util.interceptor.AccessTokenInterceptor;
+import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
 import com.dowe.util.resolver.LoginArgumentResolver;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+	private final AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
 	private final AccessTokenInterceptor accessTokenInterceptor;
 	private final LoginArgumentResolver loginArgumentResolver;
 
@@ -30,9 +32,13 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(authorizationHeaderInterceptor)
+			.addPathPatterns("/**")
+			.excludePathPatterns("/docs/index.html", "/oauth/google", "/oauth/kakao");
+
 		registry.addInterceptor(accessTokenInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/docs/index.html", "/oauth/**");
+			.excludePathPatterns("/docs/index.html", "/oauth/*");
 	}
 
 	@Override

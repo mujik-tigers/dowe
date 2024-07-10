@@ -15,7 +15,7 @@ import com.dowe.auth.MemberToken;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
-import com.dowe.exception.auth.ExpiredTokenException;
+import com.dowe.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -107,7 +107,7 @@ class TokenManagerTest extends IntegrationTestSupport {
 
 		// when // then
 		assertThatThrownBy(() -> tokenManager.parse(expiredToken))
-			.isInstanceOf(ExpiredTokenException.class);
+			.isInstanceOf(InvalidTokenException.class);
 	}
 
 }
