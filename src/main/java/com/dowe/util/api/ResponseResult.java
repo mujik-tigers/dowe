@@ -7,6 +7,7 @@ public enum ResponseResult {
 
 	// Auth
 	LOGIN_SUCCESS("로그인을 성공했습니다"),
+	TOKEN_REFRESH_SUCCESS("토큰 업데이트에 성공했습니다"),
 
 	// Common
 	EXCEPTION_OCCURRED("예외가 발생했습니다");

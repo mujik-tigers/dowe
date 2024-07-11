@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.dowe.auth.application.AuthService;
 import com.dowe.auth.presentation.AuthController;
+import com.dowe.util.interceptor.LoginInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = {
@@ -24,5 +25,8 @@ public abstract class RestDocsSupport {
 
 	@MockBean
 	protected AuthService authService;
+
+	@MockBean
+	protected LoginInterceptor loginInterceptor;
 
 }
