@@ -61,3 +61,17 @@ include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
 
 {nbsp}
 
+[[re]]
+=== 토큰 리프레싱 실패 : 유효하지 않은 인증 헤더
+(Authorization 헤더가 없거나 Beaer로 시작하지 않는 경우)
+
+==== HTTP Request
+
+include::{snippets}/refresh-fail-invalid-authorization-header/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/refresh-fail-invalid-authorization-header/http-response.adoc[]
+include::{snippets}/refresh-fail-invalid-authorization-header/response-fields.adoc[]
+
+{nbsp}
