@@ -17,6 +17,7 @@ import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
 import com.dowe.exception.auth.ExpiredTokenException;
+import com.dowe.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -110,6 +111,30 @@ class TokenManagerTest extends IntegrationTestSupport {
 		// when // then
 		assertThatThrownBy(() -> tokenManager.parse(expiredToken, ACCESS))
 			.isInstanceOf(ExpiredTokenException.class);
+	}
+
+	@Test
+	@DisplayName("토큰 타입이 일치하지 않으면 예외가 발생한다")
+	void parseTokenType() {
+		// given
+		Date issuedAt = new Date();
+		Date expiration = new Date(issuedAt.getTime() + 5000);
+
+		String accessToken = Jwts.builder()
+			.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+			.setIssuer(jwtProperties.getIssuer())
+			.setIssuedAt(issuedAt)
+			.setExpiration(expiration)
+			.claim(MEMBER_ID, 1L)
+			.claim(TOKEN_TYPE, ACCESS)
+			.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+			.compact();
+
+		// when / then
+		assertThatThrownBy(() -> tokenManager.parse(accessToken, REFRESH))
+			.isInstanceOf(InvalidTokenException.class)
+			.hasFieldOrPropertyWithValue("currentTokenType", ACCESS)
+			.hasFieldOrPropertyWithValue("needTokenType", REFRESH);
 	}
 
 }
