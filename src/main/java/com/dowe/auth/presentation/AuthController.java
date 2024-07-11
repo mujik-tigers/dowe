@@ -31,7 +31,7 @@ public class AuthController {
 			.body(ApiResponse.ok(ResponseResult.LOGIN_SUCCESS, authService.login(provider, authorizationCode)));
 	}
 
-	@GetMapping("/oauth/refresh")
+	@GetMapping("/refresh")
 	public ResponseEntity<ApiResponse<TokenPair>> refreshToken(@RequestHeader(AUTHORIZATION) String header) {
 		String refreshToken = header.substring(BEARER.length());
 

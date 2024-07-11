@@ -212,7 +212,7 @@ class AuthControllerTest extends RestDocsSupport {
 	@DisplayName("토큰 리프레싱 실패 : 유효하지 않은 인증 헤더")
 	void refreshFail_invalidAuthorizationHeader() throws Exception {
 		// when / then
-		mockMvc.perform(get("/oauth/refresh"))
+		mockMvc.perform(get("/refresh"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized())
 			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
