@@ -64,10 +64,11 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(TokenException.class)
 	public ResponseEntity<ApiResponse<Object>> handleTokenException(TokenException exception) {
-		Map<String, String> error = new LinkedHashMap<>(2);
+		Map<String, String> error = new LinkedHashMap<>(4);
 		error.put("type", exception.getClass().getSimpleName());
 		error.put("message", exception.getMessage());
-		error.put("needTokenType", exception.getNeedTokenType().name());
+		error.put("currentTokenType", exception.getCurrentTokenType().getDescription());
+		error.put("needTokenType", exception.getNeedTokenType().getDescription());
 
 		return ResponseEntity.status(exception.getStatus())
 			.body(ApiResponse.of(exception.getStatus(), ResponseResult.EXCEPTION_OCCURRED, List.of(error)));

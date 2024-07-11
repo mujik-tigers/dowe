@@ -1,6 +1,6 @@
 package com.dowe.auth.application;
 
-import static com.dowe.exception.auth.TokenType.*;
+import static com.dowe.auth.TokenType.*;
 import static com.dowe.util.AppConstants.*;
 
 import java.util.Date;
@@ -8,12 +8,12 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.dowe.auth.MemberToken;
+import com.dowe.auth.TokenType;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
 import com.dowe.exception.auth.ExpiredTokenException;
 import com.dowe.exception.auth.InvalidTokenException;
-import com.dowe.exception.auth.TokenType;
 
 import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.Claims;
@@ -37,8 +37,8 @@ public class TokenManager {
 		Date accessTokenExpiredAt = new Date(now.getTime() + jwtProperties.getAccessTokenExpiry());
 		Date refreshTokenExpiredAt = new Date(now.getTime() + jwtProperties.getRefreshTokenExpiry());
 
-		String accessToken = generateJwt(now, accessTokenExpiredAt, memberId, ACCESS_TOKEN);
-		String refreshToken = generateJwt(now, refreshTokenExpiredAt, memberId, REFRESH_TOKEN);
+		String accessToken = generateJwt(now, accessTokenExpiredAt, memberId, ACCESS);
+		String refreshToken = generateJwt(now, refreshTokenExpiredAt, memberId, REFRESH);
 
 		MemberToken memberToken = MemberToken.builder()
 			.memberId(memberId)
@@ -49,32 +49,35 @@ public class TokenManager {
 		return new TokenPair(accessToken, refreshToken);
 	}
 
-	public Long parse(String token, TokenType type) {
+	public Long parse(String token, TokenType needTokenType) {
+		TokenType currentTokenType = null;
+
 		try {
 			Claims claims = Jwts.parser()
 				.setSigningKey(jwtProperties.getSecretKey())
 				.parseClaimsJws(token)
 				.getBody();
 
-			if (getTokenTypeFromClaims(claims, TOKEN_TYPE) != type) {
-				throw new InvalidTokenException(type);
+			currentTokenType = getTokenTypeFromClaims(claims);
+			if (currentTokenType != needTokenType) {
+				throw new InvalidTokenException(currentTokenType, needTokenType);
 			}
 
 			return claims.get(MEMBER_ID, Long.class);
 		} catch (ExpiredJwtException e) {
-			throw new ExpiredTokenException(type);
+			throw new ExpiredTokenException(currentTokenType, needTokenType);
 		} catch (MalformedJwtException | SignatureException | ClaimJwtException e) {
-			throw new InvalidTokenException(type);
+			throw new InvalidTokenException(FAKE, needTokenType);
 		}
 	}
 
 	public TokenPair refresh(String refreshToken) {
-		Long memberId = parse(refreshToken, REFRESH_TOKEN);
+		Long memberId = parse(refreshToken, REFRESH);
 		MemberToken memberToken = memberTokenRepository.findById(memberId)
-			.orElseThrow(() -> new InvalidTokenException(REFRESH_TOKEN));
+			.orElseThrow(() -> new InvalidTokenException(REFRESH, REFRESH));
 
 		if (!memberToken.getRefreshToken().equals(refreshToken)) {
-			throw new InvalidTokenException(REFRESH_TOKEN);
+			throw new InvalidTokenException(REFRESH, REFRESH);
 		}
 
 		return issue(memberId);
@@ -92,8 +95,9 @@ public class TokenManager {
 			.compact();
 	}
 
-	private TokenType getTokenTypeFromClaims(Claims claims, String key) {
-		String type = claims.get(key, String.class);
+	private TokenType getTokenTypeFromClaims(Claims claims) {
+		String type = claims.get(TOKEN_TYPE, String.class);
+
 		return TokenType.valueOf(type);
 	}
 

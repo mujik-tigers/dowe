@@ -1,6 +1,6 @@
 package com.dowe.auth.application;
 
-import static com.dowe.exception.auth.TokenType.*;
+import static com.dowe.auth.TokenType.*;
 import static com.dowe.util.AppConstants.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -48,8 +48,8 @@ class TokenManagerTest extends IntegrationTestSupport {
 		TokenPair tokenPair = tokenManager.issue(memberId);
 
 		// then
-		Long memberIdInAccessToken = tokenManager.parse(tokenPair.getAccessToken(), ACCESS_TOKEN);
-		Long memberIdInRefreshToken = tokenManager.parse(tokenPair.getRefreshToken(), REFRESH_TOKEN);
+		Long memberIdInAccessToken = tokenManager.parse(tokenPair.getAccessToken(), ACCESS);
+		Long memberIdInRefreshToken = tokenManager.parse(tokenPair.getRefreshToken(), REFRESH);
 
 		assertThat(memberId).isEqualTo(memberIdInAccessToken);
 		assertThat(memberId).isEqualTo(memberIdInRefreshToken);
@@ -103,12 +103,12 @@ class TokenManagerTest extends IntegrationTestSupport {
 			.setIssuedAt(now)
 			.setExpiration(now)
 			.claim(MEMBER_ID, 1L)
-			.claim(TOKEN_TYPE, ACCESS_TOKEN)
+			.claim(TOKEN_TYPE, ACCESS)
 			.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
 			.compact();
 
 		// when // then
-		assertThatThrownBy(() -> tokenManager.parse(expiredToken, ACCESS_TOKEN))
+		assertThatThrownBy(() -> tokenManager.parse(expiredToken, ACCESS))
 			.isInstanceOf(ExpiredTokenException.class);
 	}
 

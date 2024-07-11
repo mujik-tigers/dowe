@@ -11,7 +11,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.dowe.config.converter.ProviderConverter;
-import com.dowe.util.interceptor.LoginInterceptor;
+import com.dowe.util.interceptor.AccessTokenInterceptor;
+import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-	private final LoginInterceptor loginInterceptor;
+	private final AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
+	private final AccessTokenInterceptor accessTokenInterceptor;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
@@ -33,10 +35,15 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(loginInterceptor)
+		registry.addInterceptor(authorizationHeaderInterceptor)
+			.addPathPatterns("/**")
+			.excludePathPatterns("/docs/index.html", "/oauth/google", "/oauth/kakao", "/error")
+			.order(Ordered.HIGHEST_PRECEDENCE);
+
+		registry.addInterceptor(accessTokenInterceptor)
 			.addPathPatterns("/**")
 			.excludePathPatterns("/docs/index.html", "/oauth/**")
-			.order(Ordered.HIGHEST_PRECEDENCE);
+			.order(Ordered.LOWEST_PRECEDENCE);
 	}
 
 	@Override
