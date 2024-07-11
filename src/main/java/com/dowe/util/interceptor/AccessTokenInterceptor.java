@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.dowe.auth.application.TokenManager;
-import com.dowe.exception.auth.InvalidAuthorizationHeaderException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,11 +21,6 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-		if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER)) {
-			throw new InvalidAuthorizationHeaderException();
-		}
-
 		String accessToken = authorizationHeader.substring(BEARER.length());
 		Long memberId = tokenManager.parse(accessToken);
 
