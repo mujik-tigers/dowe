@@ -24,6 +24,7 @@ import com.dowe.auth.dto.LoginData;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.exception.ErrorType;
 import com.dowe.exception.auth.InvalidAuthorizationCodeException;
+import com.dowe.exception.auth.InvalidAuthorizationHeaderException;
 import com.dowe.exception.auth.InvalidProviderException;
 import com.dowe.exception.auth.InvalidTokenException;
 import com.dowe.member.Provider;
@@ -148,7 +149,7 @@ class AuthControllerTest extends RestDocsSupport {
 		String authorizationCode = "auth-code";
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", "goooogle")            // TODO: 지금은 실패하는데 피아가 바꾼 경로 적용하면 해결될 듯
+		mockMvc.perform(get("/oauth/{provider}", "goooogle")
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
 			.andExpect(status().isBadRequest())
@@ -214,6 +215,33 @@ class AuthControllerTest extends RestDocsSupport {
 	}
 
 	@Test
+	@DisplayName("토큰 리프레싱 실패 : 유효하지 않은 인증 헤더")
+	void refreshFail_invalidAuthorizationHeader() throws Exception {
+		// when / then
+		mockMvc.perform(get("/refresh"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+			.andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
+			.andExpect(jsonPath("$.data").isArray())
+			.andExpect(jsonPath("$.data[0].type").value(InvalidAuthorizationHeaderException.class.getSimpleName()))
+			.andExpect(jsonPath("$.data[0].message").value(ErrorType.INVALID_AUTHORIZATION_HEADER.getMessage()))
+			.andDo(document("refresh-fail-invalid-authorization-header",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
+					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
+					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지")
+				)
+			));
+	}
+
+	@Test
 	@DisplayName("토큰 refresh 성공")
 	void refreshToken() throws Exception {
 		// given
@@ -228,7 +256,7 @@ class AuthControllerTest extends RestDocsSupport {
 			.willReturn(new TokenPair(accessToken, newRefreshToken));
 
 		// when // then
-		mockMvc.perform(get("/oauth/refresh")
+		mockMvc.perform(get("/refresh")
 				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -267,7 +295,7 @@ class AuthControllerTest extends RestDocsSupport {
 			.willThrow(new InvalidTokenException(TokenType.ACCESS, TokenType.REFRESH));
 
 		// when // then
-		mockMvc.perform(get("/oauth/refresh")
+		mockMvc.perform(get("/refresh")
 				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + accessToken))
 			.andDo(print())
 			.andExpect(status().isUnauthorized())

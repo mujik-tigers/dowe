@@ -37,12 +37,12 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(authorizationHeaderInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/docs/index.html", "/oauth/google", "/oauth/kakao", "/error")
+			.excludePathPatterns("/docs/index.html", "/oauth/**", "/error")
 			.order(Ordered.HIGHEST_PRECEDENCE);
 
 		registry.addInterceptor(accessTokenInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/docs/index.html", "/oauth/**")
+			.excludePathPatterns("/docs/index.html", "/oauth/**", "/refresh", "/error")
 			.order(Ordered.LOWEST_PRECEDENCE);
 	}
 

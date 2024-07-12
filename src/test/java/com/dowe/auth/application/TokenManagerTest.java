@@ -114,6 +114,55 @@ class TokenManagerTest extends IntegrationTestSupport {
 	}
 
 	@Test
+	@DisplayName("토큰 타입이 일치하면 정상적으로 memberId를 반환한다")
+	void parseMatchedTokenType() {
+		// given
+		Date issuedAt = new Date();
+		Date expiration = new Date(issuedAt.getTime() + 5000);
+		Long memberId = 1L;
+
+		String accessToken = Jwts.builder()
+			.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+			.setIssuer(jwtProperties.getIssuer())
+			.setIssuedAt(issuedAt)
+			.setExpiration(expiration)
+			.claim(MEMBER_ID, memberId)
+			.claim(TOKEN_TYPE, ACCESS)
+			.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+			.compact();
+
+		// when
+		Long loginMemberId = tokenManager.parse(accessToken, ACCESS);
+
+		// then
+		assertThat(loginMemberId).isEqualTo(memberId);
+	}
+
+	@Test
+	@DisplayName("토큰 타입이 일치하지 않으면 예외가 발생한다")
+	void parseMismatchedTokenType() {
+		// given
+		Date issuedAt = new Date();
+		Date expiration = new Date(issuedAt.getTime() + 5000);
+
+		String accessToken = Jwts.builder()
+			.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+			.setIssuer(jwtProperties.getIssuer())
+			.setIssuedAt(issuedAt)
+			.setExpiration(expiration)
+			.claim(MEMBER_ID, 1L)
+			.claim(TOKEN_TYPE, ACCESS)
+			.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+			.compact();
+
+		// when / then
+		assertThatThrownBy(() -> tokenManager.parse(accessToken, REFRESH))
+			.isInstanceOf(InvalidTokenException.class)
+			.hasFieldOrPropertyWithValue("currentTokenType", ACCESS)
+			.hasFieldOrPropertyWithValue("needTokenType", REFRESH);
+	}
+
+	@Test
 	@DisplayName("유효한 refresh token을 받으면 저장된 refresh token을 업데이트 한 후 access token, refresh token 쌍을 반환한다")
 	void refreshToken() throws Exception {
 		// given
