@@ -58,8 +58,8 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MemberRegisterException.class)
 	public ResponseEntity<ApiResponse<Object>> handleMemberRegisterException(MemberRegisterException exception) {
-		return ResponseEntity.ok()
-			.body(ApiResponse.ok(ResponseResult.LOGIN_SUCCESS, authService.generateLoginData(exception.getProvider(), exception.getAuthId())));
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(ApiResponse.created(ResponseResult.LOGIN_SUCCESS, authService.generateLoginData(exception.getProvider(), exception.getAuthId())));
 	}
 
 	@ExceptionHandler(TokenException.class)

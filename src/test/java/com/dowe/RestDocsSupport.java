@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.dowe.auth.application.AuthService;
@@ -30,7 +31,7 @@ public abstract class RestDocsSupport {
 	@MockBean
 	protected AccessTokenInterceptor accessTokenInterceptor;
 
-	@MockBean
+	@SpyBean
 	protected AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
 
 }

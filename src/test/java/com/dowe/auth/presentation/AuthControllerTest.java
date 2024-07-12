@@ -57,12 +57,12 @@ class AuthControllerTest extends RestDocsSupport {
 			.willReturn(data);
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.CREATED.getReasonPhrase()))
 			.andExpect(jsonPath("$.result").value(ResponseResult.LOGIN_SUCCESS.getDescription()))
 			.andExpect(jsonPath("$.data.code").value(data.getCode()))
 			.andExpect(jsonPath("$.data.name").value(data.getName()))
@@ -110,12 +110,12 @@ class AuthControllerTest extends RestDocsSupport {
 			.willReturn(data);
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.CREATED.getReasonPhrase()))
 			.andExpect(jsonPath("$.result").value(ResponseResult.LOGIN_SUCCESS.getDescription()))
 			.andExpect(jsonPath("$.data.code").value(data.getCode()))
 			.andExpect(jsonPath("$.data.name").value(data.getName()))
@@ -149,7 +149,7 @@ class AuthControllerTest extends RestDocsSupport {
 		String authorizationCode = "auth-code";
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", "goooogle")
+		mockMvc.perform(post("/oauth/{provider}", "goooogle")
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
 			.andExpect(status().isBadRequest())
@@ -187,7 +187,7 @@ class AuthControllerTest extends RestDocsSupport {
 			.willThrow(new InvalidAuthorizationCodeException());
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
 			.andExpect(status().isBadRequest())
@@ -218,7 +218,7 @@ class AuthControllerTest extends RestDocsSupport {
 	@DisplayName("토큰 리프레싱 실패 : 유효하지 않은 인증 헤더")
 	void refreshFail_invalidAuthorizationHeader() throws Exception {
 		// when / then
-		mockMvc.perform(get("/refresh"))
+		mockMvc.perform(patch("/refresh"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized())
 			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -249,14 +249,14 @@ class AuthControllerTest extends RestDocsSupport {
 		String newRefreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMTk2NzU4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IlJFRlJFU0gifQ.kIIL6JWkBPARjnheKouAuv0kuOfIIATxEHiuhtsq2w";
 		String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMDc1OTc4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IkFDQ0VTUyJ9.7qE6ExR0FAN1aYfekwZ7Lb1eP4BOTv-MNRCFpc9hbhs";
 
-		given(authorizationHeaderInterceptor.preHandle(any(), any(), any()))
-			.willReturn(true);
+		doReturn(true).when(authorizationHeaderInterceptor)
+			.preHandle(any(), any(), any());
 
 		given(authService.refresh(eq(refreshToken)))
 			.willReturn(new TokenPair(accessToken, newRefreshToken));
 
 		// when // then
-		mockMvc.perform(get("/refresh")
+		mockMvc.perform(patch("/refresh")
 				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -288,14 +288,14 @@ class AuthControllerTest extends RestDocsSupport {
 		// given
 		String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMDc1OTc4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IkFDQ0VTUyJ9.7qE6ExR0FAN1aYfekwZ7Lb1eP4BOTv-MNRCFpc9hbhs";
 
-		given(authorizationHeaderInterceptor.preHandle(any(), any(), any()))
-			.willReturn(true);
+		doReturn(true).when(authorizationHeaderInterceptor)
+			.preHandle(any(), any(), any());
 
 		given(authService.refresh(eq(accessToken)))
 			.willThrow(new InvalidTokenException(TokenType.ACCESS, TokenType.REFRESH));
 
 		// when // then
-		mockMvc.perform(get("/refresh")
+		mockMvc.perform(patch("/refresh")
 				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + accessToken))
 			.andDo(print())
 			.andExpect(status().isUnauthorized())
