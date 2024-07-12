@@ -61,3 +61,46 @@ include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
 
 {nbsp}
 
+[[refresh-fail-invalid-authorization-header]]
+=== 토큰 리프레싱 실패 : 유효하지 않은 인증 헤더
+(Authorization 헤더가 없거나 Beaer로 시작하지 않는 경우)
+
+==== HTTP Request
+
+include::{snippets}/refresh-fail-invalid-authorization-header/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/refresh-fail-invalid-authorization-header/http-response.adoc[]
+include::{snippets}/refresh-fail-invalid-authorization-header/response-fields.adoc[]
+
+{nbsp}
+[[token-refresh-success]]
+=== 토큰 refresh 성공
+
+==== HTTP Request
+
+include::{snippets}/token-refresh-success/http-request.adoc[]
+include::{snippets}/token-refresh-success/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/token-refresh-success/http-response.adoc[]
+include::{snippets}/token-refresh-success/response-fields.adoc[]
+
+{nbsp}
+
+[[token-refresh-success]]
+=== 토큰 refresh 실패 : refreshToken이 아닌 accessToken을 전달
+
+==== HTTP Request
+
+include::{snippets}/token-refresh-fail-hand-over-access-token/http-request.adoc[]
+include::{snippets}/token-refresh-fail-hand-over-access-token/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/token-refresh-fail-hand-over-access-token/http-response.adoc[]
+include::{snippets}/token-refresh-fail-hand-over-access-token/response-fields.adoc[]
+
+{nbsp}

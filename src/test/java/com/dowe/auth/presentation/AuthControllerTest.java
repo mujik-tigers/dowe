@@ -1,6 +1,7 @@
 package com.dowe.auth.presentation;
 
 import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -12,16 +13,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.dowe.RestDocsSupport;
+import com.dowe.auth.TokenType;
 import com.dowe.auth.application.AuthService;
 import com.dowe.auth.dto.LoginData;
+import com.dowe.auth.dto.TokenPair;
 import com.dowe.exception.ErrorType;
 import com.dowe.exception.auth.InvalidAuthorizationCodeException;
+import com.dowe.exception.auth.InvalidAuthorizationHeaderException;
 import com.dowe.exception.auth.InvalidProviderException;
+import com.dowe.exception.auth.InvalidTokenException;
 import com.dowe.member.Provider;
+import com.dowe.util.AppConstants;
 import com.dowe.util.api.ResponseResult;
 
 class AuthControllerTest extends RestDocsSupport {
@@ -50,12 +57,12 @@ class AuthControllerTest extends RestDocsSupport {
 			.willReturn(data);
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.CREATED.getReasonPhrase()))
 			.andExpect(jsonPath("$.result").value(ResponseResult.LOGIN_SUCCESS.getDescription()))
 			.andExpect(jsonPath("$.data.code").value(data.getCode()))
 			.andExpect(jsonPath("$.data.name").value(data.getName()))
@@ -103,12 +110,12 @@ class AuthControllerTest extends RestDocsSupport {
 			.willReturn(data);
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.CREATED.getReasonPhrase()))
 			.andExpect(jsonPath("$.result").value(ResponseResult.LOGIN_SUCCESS.getDescription()))
 			.andExpect(jsonPath("$.data.code").value(data.getCode()))
 			.andExpect(jsonPath("$.data.name").value(data.getName()))
@@ -142,7 +149,7 @@ class AuthControllerTest extends RestDocsSupport {
 		String authorizationCode = "auth-code";
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", "goooogle")
+		mockMvc.perform(post("/oauth/{provider}", "goooogle")
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
 			.andExpect(status().isBadRequest())
@@ -180,7 +187,7 @@ class AuthControllerTest extends RestDocsSupport {
 			.willThrow(new InvalidAuthorizationCodeException());
 
 		// when // then
-		mockMvc.perform(get("/oauth/{provider}", provider.name().toLowerCase())
+		mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
 				.param("authorizationCode", authorizationCode))
 			.andDo(print())
 			.andExpect(status().isBadRequest())
@@ -203,6 +210,118 @@ class AuthControllerTest extends RestDocsSupport {
 					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
 					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
 					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("토큰 리프레싱 실패 : 유효하지 않은 인증 헤더")
+	void refreshFail_invalidAuthorizationHeader() throws Exception {
+		// when / then
+		mockMvc.perform(patch("/refresh"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+			.andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
+			.andExpect(jsonPath("$.data").isArray())
+			.andExpect(jsonPath("$.data[0].type").value(InvalidAuthorizationHeaderException.class.getSimpleName()))
+			.andExpect(jsonPath("$.data[0].message").value(ErrorType.INVALID_AUTHORIZATION_HEADER.getMessage()))
+			.andDo(document("refresh-fail-invalid-authorization-header",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
+					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
+					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("토큰 refresh 성공")
+	void refreshToken() throws Exception {
+		// given
+		String refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5NTksImV4cCI6MTcyMTk2NzU1OSwibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IlJFRlJFU0gifQ.O4YHeol1a2yADRCd0zBtpJyThJxeOVjKor_cRLPUTZc";
+		String newRefreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMTk2NzU4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IlJFRlJFU0gifQ.kIIL6JWkBPARjnheKouAuv0kuOfIIATxEHiuhtsq2w";
+		String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMDc1OTc4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IkFDQ0VTUyJ9.7qE6ExR0FAN1aYfekwZ7Lb1eP4BOTv-MNRCFpc9hbhs";
+
+		doReturn(true).when(authorizationHeaderInterceptor)
+			.preHandle(any(), any(), any());
+
+		given(authService.refresh(eq(refreshToken)))
+			.willReturn(new TokenPair(accessToken, newRefreshToken));
+
+		// when // then
+		mockMvc.perform(patch("/refresh")
+				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+			.andExpect(jsonPath("$.result").value(ResponseResult.TOKEN_REFRESH_SUCCESS.getDescription()))
+			.andExpect(jsonPath("$.data.accessToken").value(accessToken))
+			.andExpect(jsonPath("$.data.refreshToken").value(newRefreshToken))
+			.andDo(document("token-refresh-success",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName(HttpHeaders.AUTHORIZATION).description("refresh token")
+				),
+				responseFields(
+					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+					fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("access token"),
+					fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("refresh token")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("토큰 refresh 실패 : refreshToken이 아닌 accessToken을 전달")
+	void refreshTokenFailInvalidTokenType() throws Exception {
+		// given
+		String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMDc1OTc4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IkFDQ0VTUyJ9.7qE6ExR0FAN1aYfekwZ7Lb1eP4BOTv-MNRCFpc9hbhs";
+
+		doReturn(true).when(authorizationHeaderInterceptor)
+			.preHandle(any(), any(), any());
+
+		given(authService.refresh(eq(accessToken)))
+			.willThrow(new InvalidTokenException(TokenType.ACCESS, TokenType.REFRESH));
+
+		// when // then
+		mockMvc.perform(patch("/refresh")
+				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + accessToken))
+			.andDo(print())
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+			.andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
+			.andExpect(jsonPath("$.data").isArray())
+			.andExpect(jsonPath("$.data[0].type").value(InvalidTokenException.class.getSimpleName()))
+			.andExpect(jsonPath("$.data[0].message").value(ErrorType.INVALID_TOKEN.getMessage()))
+			.andExpect(jsonPath("$.data[0].currentTokenType").value(TokenType.ACCESS.getDescription()))
+			.andExpect(jsonPath("$.data[0].needTokenType").value(TokenType.REFRESH.getDescription()))
+			.andDo(document("token-refresh-fail-hand-over-access-token",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName(HttpHeaders.AUTHORIZATION).description("access token")
+				),
+				responseFields(
+					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
+					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
+					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지"),
+					fieldWithPath("data[].currentTokenType").type(JsonFieldType.STRING).description("클라이언트가 보낸 토큰 타입"),
+					fieldWithPath("data[].needTokenType").type(JsonFieldType.STRING).description("실제 필요한 토큰 타입")
 				)
 			));
 	}

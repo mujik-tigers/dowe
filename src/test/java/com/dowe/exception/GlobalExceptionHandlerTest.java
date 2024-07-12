@@ -79,9 +79,9 @@ class GlobalExceptionHandlerTest {
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
 				try {
-					ResultActions resultActions = mockMvc.perform(get("/oauth/google")
+					ResultActions resultActions = mockMvc.perform(post("/oauth/google")
 							.param("authorizationCode", authorizationCode))
-						.andExpect(status().isOk());
+						.andExpect(status().isCreated());
 
 					String response = resultActions.andReturn().getResponse().getContentAsString(Charsets.UTF_8);
 					JsonNode rootNode = objectMapper.readTree(response);
