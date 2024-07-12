@@ -17,6 +17,7 @@ import com.dowe.auth.dto.TokenPair;
 import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.config.properties.JwtProperties;
 import com.dowe.exception.auth.ExpiredTokenException;
+import com.dowe.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -110,6 +111,44 @@ class TokenManagerTest extends IntegrationTestSupport {
 		// when // then
 		assertThatThrownBy(() -> tokenManager.parse(expiredToken, ACCESS))
 			.isInstanceOf(ExpiredTokenException.class);
+	}
+
+	@Test
+	@DisplayName("유효한 refresh token을 받으면 저장된 refresh token을 업데이트 한 후 access token, refresh token 쌍을 반환한다")
+	void refreshToken() throws Exception {
+		// given
+		String refreshToken = "refreshToken!!!";
+		Long memberId = 1L;
+		MemberToken memberToken = MemberToken.builder()
+			.memberId(memberId)
+			.refreshToken(refreshToken)
+			.build();
+		memberTokenRepository.save(memberToken);
+
+		// when
+		TokenPair tokenPair = tokenManager.refresh(memberId, refreshToken);
+
+		// then
+		MemberToken savedRefreshToken = memberTokenRepository.findById(memberId).get();
+		assertThat(savedRefreshToken.getRefreshToken()).isNotEqualTo(refreshToken);
+		assertThat(savedRefreshToken.getRefreshToken()).isEqualTo(tokenPair.getRefreshToken());
+	}
+
+	@Test
+	@DisplayName("유효하지 않은 refresh token을 받으면 예외가 발생한다")
+	void refreshTokenFail() throws Exception {
+		// given
+		String refreshToken = "refreshToken!!!";
+		Long memberId = 1L;
+		MemberToken memberToken = MemberToken.builder()
+			.memberId(memberId)
+			.refreshToken(refreshToken)
+			.build();
+		memberTokenRepository.save(memberToken);
+
+		// when // then
+		assertThatThrownBy(() -> tokenManager.refresh(memberId, "invalid refreshToken"))
+			.isInstanceOf(InvalidTokenException.class);
 	}
 
 }

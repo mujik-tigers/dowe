@@ -23,4 +23,12 @@ public class MemberToken {
 		this.refreshToken = refreshToken;
 	}
 
+	public void changeRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public boolean doesNotMatch(String refreshTokenInput) {
+		return !refreshToken.equals(refreshTokenInput);
+	}
+
 }

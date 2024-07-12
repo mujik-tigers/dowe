@@ -6,6 +6,7 @@ import static com.dowe.util.AppConstants.*;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dowe.auth.MemberToken;
 import com.dowe.auth.TokenType;
@@ -26,6 +27,7 @@ import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class TokenManager {
 
@@ -33,20 +35,15 @@ public class TokenManager {
 	private final MemberTokenRepository memberTokenRepository;
 
 	public TokenPair issue(Long memberId) {
-		Date now = new Date();
-		Date accessTokenExpiredAt = new Date(now.getTime() + jwtProperties.getAccessTokenExpiry());
-		Date refreshTokenExpiredAt = new Date(now.getTime() + jwtProperties.getRefreshTokenExpiry());
-
-		String accessToken = generateJwt(now, accessTokenExpiredAt, memberId, ACCESS);
-		String refreshToken = generateJwt(now, refreshTokenExpiredAt, memberId, REFRESH);
+		TokenPair tokenPair = generateTokenPair(memberId);
 
 		MemberToken memberToken = MemberToken.builder()
 			.memberId(memberId)
-			.refreshToken(refreshToken)
+			.refreshToken(tokenPair.getRefreshToken())
 			.build();
 		memberTokenRepository.save(memberToken);
 
-		return new TokenPair(accessToken, refreshToken);
+		return tokenPair;
 	}
 
 	public Long parse(String token, TokenType needTokenType) {
@@ -71,16 +68,18 @@ public class TokenManager {
 		}
 	}
 
-	public TokenPair refresh(String refreshToken) {
-		Long memberId = parse(refreshToken, REFRESH);
+	public TokenPair refresh(Long memberId, String refreshTokenInput) {
 		MemberToken memberToken = memberTokenRepository.findById(memberId)
 			.orElseThrow(() -> new InvalidTokenException(REFRESH, REFRESH));
 
-		if (!memberToken.getRefreshToken().equals(refreshToken)) {
+		if (memberToken.doesNotMatch(refreshTokenInput)) {
 			throw new InvalidTokenException(REFRESH, REFRESH);
 		}
 
-		return issue(memberId);
+		TokenPair tokenPair = generateTokenPair(memberId);
+		memberToken.changeRefreshToken(tokenPair.getRefreshToken());
+
+		return tokenPair;
 	}
 
 	private String generateJwt(Date now, Date expiredAt, Long memberId, TokenType type) {
@@ -99,6 +98,17 @@ public class TokenManager {
 		String type = claims.get(TOKEN_TYPE, String.class);
 
 		return TokenType.valueOf(type);
+	}
+
+	private TokenPair generateTokenPair(Long memberId) {
+		Date now = new Date();
+		Date accessTokenExpiredAt = new Date(now.getTime() + jwtProperties.getAccessTokenExpiry());
+		Date refreshTokenExpiredAt = new Date(now.getTime() + jwtProperties.getRefreshTokenExpiry());
+
+		String accessToken = generateJwt(now, accessTokenExpiredAt, memberId, ACCESS);
+		String refreshToken = generateJwt(now, refreshTokenExpiredAt, memberId, REFRESH);
+
+		return new TokenPair(accessToken, refreshToken);
 	}
 
 }

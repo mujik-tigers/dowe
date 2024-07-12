@@ -33,10 +33,10 @@ public class AuthController {
 
 	@GetMapping("/oauth/refresh")
 	public ResponseEntity<ApiResponse<TokenPair>> refreshToken(@RequestHeader(AUTHORIZATION) String header) {
-		String refreshToken = header.substring(BEARER.length());
+		String refreshTokenInput = header.substring(BEARER.length());
 
 		return ResponseEntity.ok()
-			.body(ApiResponse.ok(ResponseResult.TOKEN_REFRESH_SUCCESS, authService.refresh(refreshToken)));
+			.body(ApiResponse.ok(ResponseResult.TOKEN_REFRESH_SUCCESS, authService.refresh(refreshTokenInput)));
 	}
 
 }

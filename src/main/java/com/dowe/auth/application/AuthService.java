@@ -1,5 +1,7 @@
 package com.dowe.auth.application;
 
+import static com.dowe.auth.TokenType.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +37,9 @@ public class AuthService {
 			});
 	}
 
-	public TokenPair refresh(String refreshToken) {
-		return tokenManager.refresh(refreshToken);
+	public TokenPair refresh(String refreshTokenInput) {
+		Long memberId = tokenManager.parse(refreshTokenInput, REFRESH);
+		return tokenManager.refresh(memberId, refreshTokenInput);
 	}
 
 }
