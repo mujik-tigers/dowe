@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
+import com.dowe.member.dto.MemberName;
 import com.dowe.member.infrastructure.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -50,6 +50,21 @@ public class MemberService {
 		}
 
 		return code;
+	}
+
+	@Transactional
+	public MemberName updateName(Long memberId, String newName) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow();
+
+		newName = removeExtraSpaces(newName);
+		member.updateName(newName);
+
+		return new MemberName(newName);
+	}
+
+	private String removeExtraSpaces(String newName) {
+		return newName.strip().replaceAll("\\s{2,}", " ");
 	}
 
 }

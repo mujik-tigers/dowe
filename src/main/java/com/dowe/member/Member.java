@@ -35,4 +35,8 @@ public class Member {
 		this.code = code;
 	}
 
+	public void updateName(String newName) {
+		this.name = newName;
+	}
+
 }

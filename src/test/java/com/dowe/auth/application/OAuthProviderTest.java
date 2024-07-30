@@ -26,9 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class OAuthProviderTest extends IntegrationTestSupport {
 
 	@Autowired
-	private OAuthProvider oAuthProvider;
-
-	@Autowired
 	private ObjectMapper objectMapper;
 
 	private ClientAndServer mockServer;
@@ -75,7 +72,7 @@ class OAuthProviderTest extends IntegrationTestSupport {
 				.withBody(objectMapper.writeValueAsString(userResource)));
 
 		// when
-		String authId = oAuthProvider.authenticate(provider, authorizationCode);
+		String authId = authProvider.authenticate(provider, authorizationCode);
 
 		// then
 		assertThat(authId).isEqualTo(userResource.getId());
@@ -96,7 +93,7 @@ class OAuthProviderTest extends IntegrationTestSupport {
 				.withContentType(MediaType.APPLICATION_JSON));
 
 		// when // then
-		assertThatThrownBy(() -> oAuthProvider.authenticate(Provider.GOOGLE, invalidCode))
+		assertThatThrownBy(() -> authProvider.authenticate(Provider.GOOGLE, invalidCode))
 			.isInstanceOf(InvalidAuthorizationCodeException.class);
 
 	}

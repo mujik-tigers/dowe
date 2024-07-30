@@ -8,13 +8,17 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.dowe.auth.application.AuthService;
+import com.dowe.auth.application.TokenManager;
 import com.dowe.auth.presentation.AuthController;
+import com.dowe.member.application.MemberService;
+import com.dowe.member.presentation.MemberController;
 import com.dowe.util.interceptor.AccessTokenInterceptor;
 import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = {
-	AuthController.class
+	AuthController.class,
+	MemberController.class
 })
 @AutoConfigureRestDocs
 public abstract class RestDocsSupport {
@@ -25,13 +29,19 @@ public abstract class RestDocsSupport {
 	@Autowired
 	protected ObjectMapper objectMapper;
 
-	@MockBean
-	protected AuthService authService;
-
-	@MockBean
+	@SpyBean
 	protected AccessTokenInterceptor accessTokenInterceptor;
 
 	@SpyBean
 	protected AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
+
+	@MockBean
+	protected AuthService authService;
+
+	@MockBean
+	protected TokenManager tokenManager;
+
+	@MockBean
+	protected MemberService memberService;
 
 }
