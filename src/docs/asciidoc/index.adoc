@@ -12,5 +12,6 @@ endif::[]
 :docinfo: shared
 
 include::api/auth.adoc[]
+include::api/member.adoc[]
 
 {nbsp}
