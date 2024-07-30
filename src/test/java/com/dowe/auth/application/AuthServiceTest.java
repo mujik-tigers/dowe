@@ -23,7 +23,6 @@ import com.dowe.auth.infrastructure.MemberTokenRepository;
 import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
-import com.dowe.member.infrastructure.MemberRepository;
 
 class AuthServiceTest extends IntegrationTestSupport {
 
@@ -31,16 +30,10 @@ class AuthServiceTest extends IntegrationTestSupport {
 	private AuthService authService;
 
 	@Autowired
-	private OAuthProvider authProvider;
+	private StringRedisTemplate redisTemplate;
 
 	@Autowired
 	private MemberTokenRepository memberTokenRepository;
-
-	@Autowired
-	private MemberRepository memberRepository;
-
-	@Autowired
-	private StringRedisTemplate redisTemplate;
 
 	@BeforeEach
 	void clean() {
