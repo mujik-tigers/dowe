@@ -1,11 +1,14 @@
 package com.dowe.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.dowe.config.converter.ProviderConverter;
 import com.dowe.util.interceptor.AccessTokenInterceptor;
 import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
+import com.dowe.util.resolver.LoginArgumentResolver;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	private final AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
 	private final AccessTokenInterceptor accessTokenInterceptor;
+	private final LoginArgumentResolver loginArgumentResolver;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
@@ -44,6 +49,11 @@ public class WebConfig implements WebMvcConfigurer {
 			.addPathPatterns("/**")
 			.excludePathPatterns("/docs/index.html", "/oauth/**", "/refresh", "/error")
 			.order(Ordered.LOWEST_PRECEDENCE);
+	}
+
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(loginArgumentResolver);
 	}
 
 	@Override

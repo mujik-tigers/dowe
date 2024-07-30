@@ -10,7 +10,10 @@ public enum ResponseResult {
 	TOKEN_REFRESH_SUCCESS("토큰 업데이트에 성공했습니다"),
 
 	// Common
-	EXCEPTION_OCCURRED("예외가 발생했습니다");
+	EXCEPTION_OCCURRED("예외가 발생했습니다"),
+
+	// Member
+	MEMBER_NAME_UPDATE_SUCCESS("이름을 성공적으로 변경하였습니다");
 
 	private final String description;
 
