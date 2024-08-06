@@ -3,6 +3,7 @@ package com.dowe.team.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dowe.exception.member.MemberNotFoundException;
 import com.dowe.member.Member;
 import com.dowe.member.infrastructure.MemberRepository;
 import com.dowe.profile.Profile;
@@ -26,7 +27,7 @@ public class TeamService {
 	@Transactional
 	public NewTeam create(Long memberId, TeamSettings teamSettings) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(MemberNotFoundException::new);
 
 		Team teamBuilder = Team.builder()
 			.title(StringUtil.removeExtraSpaces(teamSettings.getTitle()))

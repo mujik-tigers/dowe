@@ -3,6 +3,8 @@ package com.dowe.team;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dowe.exception.team.AlreadyInTeamException;
+import com.dowe.exception.team.TeamFullException;
 import com.dowe.member.Member;
 import com.dowe.profile.Profile;
 import com.dowe.util.AppConstants;
@@ -52,12 +54,12 @@ public class Team {
 
 	public Profile join(Member member) {
 		if (profiles.size() >= AppConstants.TEAM_MAX_SIZE) {
-			throw new RuntimeException("워크 스페이스에 멤버가 가득 차 참여할 수 없습니다");
+			throw new TeamFullException();
 		}
 
 		for (Profile profile : this.profiles) {
 			if (profile.isOwnedBy(member)) {
-				throw new RuntimeException("이미 소속된 워크 스페이스입니다");
+				throw new AlreadyInTeamException();
 			}
 		}
 
