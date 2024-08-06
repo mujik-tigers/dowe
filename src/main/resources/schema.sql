@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `profile`;
+DROP TABLE IF EXISTS `team`;
 DROP TABLE IF EXISTS `member_token`;
 DROP TABLE IF EXISTS `member`;
 
@@ -14,4 +16,22 @@ CREATE UNIQUE INDEX provider_auth_id ON `member` (`provider`, `auth_id`);
 CREATE TABLE `member_token` (
   `member_id` bigint PRIMARY KEY,
   `refresh_token` varchar(255)
+);
+
+CREATE TABLE `team` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `title` varchar(20),
+  `description` varchar(100),
+  `image` varchar(255),
+  `manager_id` bigint,
+  `notice` varchar(200)
+);
+
+CREATE TABLE `profile` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `team_id` bigint,
+  `member_id` bigint,
+  `image` varchar(255),
+  `nickname` varchar(30),
+  `description` varchar(200)
 );
