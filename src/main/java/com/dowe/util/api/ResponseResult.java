@@ -13,7 +13,10 @@ public enum ResponseResult {
 	EXCEPTION_OCCURRED("예외가 발생했습니다"),
 
 	// Member
-	MEMBER_NAME_UPDATE_SUCCESS("이름을 성공적으로 변경하였습니다");
+	MEMBER_NAME_UPDATE_SUCCESS("이름을 성공적으로 변경하였습니다"),
+
+	// Team
+	TEAM_CREATE_SUCCESS("팀 생성에 성공했습니다");
 
 	private final String description;
 
