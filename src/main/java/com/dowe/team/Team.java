@@ -39,17 +39,15 @@ public class Team {
 	@JoinColumn(name = "manager_id")
 	private Member manager;
 
-	private String notice;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
 	private List<Profile> profiles = new ArrayList<>();
 
 	@Builder
-	public Team(String title, String image, Member manager, String notice) {
+	public Team(String title, String description, String image, Member manager) {
 		this.title = title;
+		this.description = description;
 		this.image = image;
 		this.manager = manager;
-		this.notice = notice;
 	}
 
 	public Profile join(Member member) {
