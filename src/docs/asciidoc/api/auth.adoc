@@ -63,6 +63,7 @@ include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
 
 [[refresh-fail-invalid-authorization-header]]
 === 토큰 리프레싱 실패 : 유효하지 않은 인증 헤더
+
 (Authorization 헤더가 없거나 Beaer로 시작하지 않는 경우)
 
 ==== HTTP Request
@@ -75,6 +76,23 @@ include::{snippets}/refresh-fail-invalid-authorization-header/http-response.adoc
 include::{snippets}/refresh-fail-invalid-authorization-header/response-fields.adoc[]
 
 {nbsp}
+
+[[refresh-fail-expired-token]]
+=== 토큰 리프레싱 실패 : 만료된 토큰
+
+Access Token 만료 시에도 경우도 아래와 동일한 형식의 응답을 반환합니다.
+
+==== HTTP Request
+
+include::{snippets}/token-refresh-fail-expired-token/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/token-refresh-fail-expired-token/http-response.adoc[]
+include::{snippets}/token-refresh-fail-expired-token/response-fields.adoc[]
+
+{nbsp}
+
 [[token-refresh-success]]
 === 토큰 refresh 성공
 
