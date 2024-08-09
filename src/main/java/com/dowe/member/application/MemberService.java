@@ -13,6 +13,7 @@ import com.dowe.member.Member;
 import com.dowe.member.Provider;
 import com.dowe.member.dto.MemberName;
 import com.dowe.member.infrastructure.MemberRepository;
+import com.dowe.util.StringUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,14 +58,10 @@ public class MemberService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow();
 
-		newName = removeExtraSpaces(newName);
+		newName = StringUtil.removeExtraSpaces(newName);
 		member.updateName(newName);
 
 		return new MemberName(newName);
-	}
-
-	private String removeExtraSpaces(String newName) {
-		return newName.strip().replaceAll("\\s{2,}", " ");
 	}
 
 }

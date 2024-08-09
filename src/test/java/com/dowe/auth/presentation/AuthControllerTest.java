@@ -23,6 +23,7 @@ import com.dowe.auth.application.AuthService;
 import com.dowe.auth.dto.LoginData;
 import com.dowe.auth.dto.TokenPair;
 import com.dowe.exception.ErrorType;
+import com.dowe.exception.auth.ExpiredTokenException;
 import com.dowe.exception.auth.InvalidAuthorizationCodeException;
 import com.dowe.exception.auth.InvalidAuthorizationHeaderException;
 import com.dowe.exception.auth.InvalidProviderException;
@@ -312,6 +313,47 @@ class AuthControllerTest extends RestDocsSupport {
 				preprocessResponse(prettyPrint()),
 				requestHeaders(
 					headerWithName(HttpHeaders.AUTHORIZATION).description("access token")
+				),
+				responseFields(
+					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
+					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
+					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지"),
+					fieldWithPath("data[].currentTokenType").type(JsonFieldType.STRING).description("클라이언트가 보낸 토큰 타입"),
+					fieldWithPath("data[].needTokenType").type(JsonFieldType.STRING).description("실제 필요한 토큰 타입")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("토큰 리프레싱 실패 : 토큰 유효기간 만료")
+	void refreshTokenFailExpiredToken() throws Exception {
+		// given
+		String refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjA3NTc5ODcsImV4cCI6MTcyMDc1OTc4NywibWVtYmVySWQiOjQsInRva2VuVHlwZSI6IkFDQ0VTUyJ9.7qE6ExR0FAN1aYfekwZ7Lb1eP4BOTv-MNRCFpc9hbhs";
+
+		given(authService.refresh(eq(refreshToken)))
+			.willThrow(new ExpiredTokenException(TokenType.REFRESH, TokenType.REFRESH));
+
+		// when // then
+		mockMvc.perform(patch("/refresh")
+				.header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
+			.andDo(print())
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
+			.andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+			.andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
+			.andExpect(jsonPath("$.data").isArray())
+			.andExpect(jsonPath("$.data[0].type").value(ExpiredTokenException.class.getSimpleName()))
+			.andExpect(jsonPath("$.data[0].message").value(ErrorType.EXPIRED_TOKEN.getMessage()))
+			.andExpect(jsonPath("$.data[0].currentTokenType").value(TokenType.REFRESH.getDescription()))
+			.andExpect(jsonPath("$.data[0].needTokenType").value(TokenType.REFRESH.getDescription()))
+			.andDo(document("token-refresh-fail-expired-token",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName(HttpHeaders.AUTHORIZATION).description("refresh token")
 				),
 				responseFields(
 					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),

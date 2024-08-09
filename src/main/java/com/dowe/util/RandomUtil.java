@@ -35,4 +35,8 @@ public final class RandomUtil {
 		return samples.get(prefixIndex) + suffixNumber;
 	}
 
+	public static String generateFileNamePrefix() {
+		return UUID.randomUUID().toString().substring(0, 8) + "-";
+	}
+
 }
