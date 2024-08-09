@@ -49,7 +49,7 @@ public class TeamService {
 		Profile profile = team.join(member);
 		profileRepository.save(profile);
 
-		return new NewTeam(team);
+		return new NewTeam(team.getId());
 	}
 
 }

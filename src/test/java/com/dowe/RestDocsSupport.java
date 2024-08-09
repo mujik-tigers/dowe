@@ -12,13 +12,16 @@ import com.dowe.auth.application.TokenManager;
 import com.dowe.auth.presentation.AuthController;
 import com.dowe.member.application.MemberService;
 import com.dowe.member.presentation.MemberController;
+import com.dowe.team.application.TeamService;
+import com.dowe.team.presentation.TeamController;
 import com.dowe.util.interceptor.AccessTokenInterceptor;
 import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = {
 	AuthController.class,
-	MemberController.class
+	MemberController.class,
+	TeamController.class
 })
 @AutoConfigureRestDocs
 public abstract class RestDocsSupport {
@@ -43,5 +46,8 @@ public abstract class RestDocsSupport {
 
 	@MockBean
 	protected MemberService memberService;
+
+	@MockBean
+	protected TeamService teamService;
 
 }
