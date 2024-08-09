@@ -21,10 +21,9 @@ CREATE TABLE `member_token` (
 CREATE TABLE `team` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(20),
-  `description` varchar(100),
+  `description` varchar(30),
   `image` varchar(255),
-  `manager_id` bigint,
-  `notice` varchar(200)
+  `manager_id` bigint
 );
 
 CREATE TABLE `profile` (
@@ -33,5 +32,5 @@ CREATE TABLE `profile` (
   `member_id` bigint,
   `image` varchar(255),
   `nickname` varchar(30),
-  `description` varchar(200)
+  `description` varchar(30)
 );
