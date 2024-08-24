@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `profile`;
 DROP TABLE IF EXISTS `team`;
 DROP TABLE IF EXISTS `member_token`;
 DROP TABLE IF EXISTS `member`;
+DROP TABLE IF EXISTS `todo_list`;
 
 CREATE TABLE `member` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
@@ -33,4 +34,12 @@ CREATE TABLE `profile` (
   `image` varchar(255),
   `nickname` varchar(30),
   `description` varchar(30)
+);
+
+CREATE TABLE `todo_list` (
+    `id` bigint PRIMARY KEY AUTO_INCREMENT,
+    `profile_id` bigint,
+    `completed` boolean,
+    `created_at` datetime,
+    `updated_at` datetime
 );
