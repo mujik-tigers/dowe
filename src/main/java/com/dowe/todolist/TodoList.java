@@ -8,4 +8,11 @@ public class TodoList extends BaseEntity {
 
 	private boolean completed;
 
+	private TodoList(
+		Profile profile
+	) {
+		this.profile = profile;
+		this.completed = false;
+	}
+
 }
