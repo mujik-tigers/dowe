@@ -15,4 +15,11 @@ public class TodoList extends BaseEntity {
 		this.completed = false;
 	}
 
+	public static TodoList of(
+		Profile profile
+	) {
+		return TodoList.builder()
+			.profile(profile)
+			.build();
+	}
 }
