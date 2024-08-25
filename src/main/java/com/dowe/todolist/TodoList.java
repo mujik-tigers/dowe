@@ -1,4 +1,5 @@
 package com.dowe.todolist;
 
-public class TodoList {
+public class TodoList extends BaseEntity {
+
 }
