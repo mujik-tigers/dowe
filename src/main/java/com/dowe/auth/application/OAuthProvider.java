@@ -16,9 +16,11 @@ import com.dowe.exception.auth.InvalidAuthorizationCodeException;
 import com.dowe.member.Provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuthProvider {
 
 	private final OAuthProperties properties;
@@ -45,6 +47,7 @@ public class OAuthProvider {
 			.body(body)
 			.retrieve()
 			.onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+				log.info("Request Access Token Failed : status={}", response.getStatusText());
 				throw new InvalidAuthorizationCodeException();
 			})
 			.toEntity(AccessToken.class)
