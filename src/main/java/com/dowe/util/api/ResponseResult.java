@@ -14,6 +14,7 @@ public enum ResponseResult {
 
 	// Member
 	MEMBER_NAME_UPDATE_SUCCESS("이름을 성공적으로 변경하였습니다"),
+	MY_TEAM_FETCH_SUCCESS("나의 팀 조회에 성공했습니다"),
 
 	// Team
 	TEAM_CREATE_SUCCESS("팀 생성에 성공했습니다");
