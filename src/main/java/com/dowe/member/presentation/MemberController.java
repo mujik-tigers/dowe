@@ -32,7 +32,7 @@ public class MemberController {
 	@GetMapping("/members/teams")
 	public ResponseEntity<ApiResponse<MyTeamList>> fetchMyTeam(@Login Long memberId) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.ok(ResponseResult.MY_TEAM_FETCH_SUCCESS, memberService.fetchMyTeam(memberId)));
+			.body(ApiResponse.ok(ResponseResult.MY_TEAM_LIST_FETCH_SUCCESS, memberService.fetchMyTeam(memberId)));
 	}
 
 }

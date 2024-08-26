@@ -2,8 +2,10 @@ package com.dowe.member.dto;
 
 import com.dowe.team.Team;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class TeamInList {
 
