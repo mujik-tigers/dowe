@@ -31,7 +31,7 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 		String accessToken = request.getHeader(AUTHORIZATION).substring(BEARER.length());
 		Long memberId = tokenManager.parse(accessToken, ACCESS);
 
-		log.info("-- MEMBER ID {} 엑세스 토큰 인터셉터 통과 --", memberId);
+		log.info("Passing through AccessTokenInterceptor: memberId={}", memberId);
 		request.setAttribute(MEMBER_ID, memberId);
 
 		return true;
