@@ -2,17 +2,22 @@ package com.dowe.member.application;
 
 import static com.dowe.util.RandomUtil.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dowe.exception.member.MemberNotFoundException;
 import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
 import com.dowe.member.dto.MemberName;
+import com.dowe.member.dto.MyTeamList;
+import com.dowe.member.dto.TeamInList;
 import com.dowe.member.infrastructure.MemberRepository;
+import com.dowe.team.infrastructure.TeamRepository;
 import com.dowe.util.StringUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final MemberCodeStorage memberCodeStorage;
+	private final TeamRepository teamRepository;
 
 	public Optional<Member> findBy(Provider provider, String authId) {
 		return memberRepository.findByProvider(provider, authId);
@@ -56,12 +62,24 @@ public class MemberService {
 	@Transactional
 	public MemberName updateName(Long memberId, String newName) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow();
+			.orElseThrow(MemberNotFoundException::new);
 
 		newName = StringUtil.removeExtraSpaces(newName);
 		member.updateName(newName);
 
 		return new MemberName(newName);
+	}
+
+	public MyTeamList fetchMyTeam(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(MemberNotFoundException::new);
+
+		List<TeamInList> teams = teamRepository.findAllTeamsByMemberId(member.getId())
+			.stream()
+			.map(TeamInList::new)
+			.toList();
+
+		return new MyTeamList(teams);
 	}
 
 }
