@@ -14,8 +14,8 @@ import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
 import com.dowe.member.dto.MemberName;
-import com.dowe.member.dto.MyTeamList;
-import com.dowe.member.dto.TeamInList;
+import com.dowe.member.dto.TeamOutline;
+import com.dowe.member.dto.response.FetchMyTeamResponse;
 import com.dowe.member.infrastructure.MemberRepository;
 import com.dowe.team.infrastructure.TeamRepository;
 import com.dowe.util.StringUtil;
@@ -70,16 +70,16 @@ public class MemberService {
 		return new MemberName(newName);
 	}
 
-	public MyTeamList fetchMyTeam(Long memberId) {
+	public FetchMyTeamResponse fetchMyTeam(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(MemberNotFoundException::new);
 
-		List<TeamInList> teams = teamRepository.findAllTeamsByMemberId(member.getId())
+		List<TeamOutline> teamOutlineList = teamRepository.findAllTeamsByMemberId(member.getId())
 			.stream()
-			.map(TeamInList::new)
+			.map(TeamOutline::of)
 			.toList();
 
-		return new MyTeamList(teams);
+		return FetchMyTeamResponse.from(teamOutlineList);
 	}
 
 }
