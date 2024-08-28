@@ -1,5 +1,6 @@
 package com.dowe.member.presentation;
 
+import static com.dowe.util.AppConstants.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.*;
@@ -21,9 +22,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.dowe.RestDocsSupport;
 import com.dowe.member.dto.MemberName;
-import com.dowe.member.dto.MyTeamList;
-import com.dowe.member.dto.TeamInList;
-import com.dowe.util.AppConstants;
+import com.dowe.member.dto.TeamOutline;
+import com.dowe.member.dto.response.FetchMyTeamResponse;
 import com.dowe.util.api.ResponseResult;
 
 class MemberControllerTest extends RestDocsSupport {
@@ -32,7 +32,7 @@ class MemberControllerTest extends RestDocsSupport {
 	@DisplayName("이름 변경 성공")
 	void updateNameSuccess() throws Exception {
 		// given
-		String authorizationHeader = AppConstants.BEARER + "accessToken";
+		String authorizationHeader = BEARER + "accessToken";
 		MemberName memberName = new MemberName(" your new   name");
 
 		given(tokenManager.parse(anyString(), any()))
@@ -68,7 +68,7 @@ class MemberControllerTest extends RestDocsSupport {
 	@DisplayName("이름 변경 실패 : 이름 길이 20자 초과")
 	void updateNameFail() throws Exception {
 		// given
-		String authorizationHeader = AppConstants.BEARER + "accessToken";
+		String authorizationHeader = BEARER + "accessToken";
 		MemberName memberName = new MemberName("your name is too long...");
 
 		given(tokenManager.parse(anyString(), any()))
@@ -102,13 +102,21 @@ class MemberControllerTest extends RestDocsSupport {
 	@DisplayName("나의 팀 목록 조회 성공")
 	void fetchMyTeam() throws Exception {
 		// given
-		String authorizationHeader = AppConstants.BEARER + "accessToken";
-		MyTeamList myTeamList = new MyTeamList(List.of(new TeamInList(11L, "매일 런닝 크루", "꾸준히 달리는 습관 만들기", "https://source/image.jpg")));
+		String authorizationHeader = BEARER + "accessToken";
+
+		TeamOutline teamOutline = new TeamOutline(11L,
+			"매일 런닝 크루",
+			"https://source/image.jpg",
+			3,
+			TEAM_MAX_SIZE
+		);
+
+		FetchMyTeamResponse fetchMyTeamResponse = FetchMyTeamResponse.from(List.of(teamOutline));
 
 		given(tokenManager.parse(anyString(), any()))
 			.willReturn(1L);
 		given(memberService.fetchMyTeam(anyLong()))
-			.willReturn(myTeamList);
+			.willReturn(fetchMyTeamResponse);
 
 		// when / then
 		mockMvc.perform(get("/members/teams")
@@ -127,11 +135,13 @@ class MemberControllerTest extends RestDocsSupport {
 					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
 					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
 					fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-					fieldWithPath("data.teams[]").type(JsonFieldType.ARRAY).description("나의 팀 목록"),
-					fieldWithPath("data.teams[].id").type(JsonFieldType.NUMBER).description("아이디"),
-					fieldWithPath("data.teams[].title").type(JsonFieldType.STRING).description("이름"),
-					fieldWithPath("data.teams[].description").type(JsonFieldType.STRING).description("소개"),
-					fieldWithPath("data.teams[].image").type(JsonFieldType.STRING).description("프로필 이미지 URL")
+					fieldWithPath("data.teamOutlineList[]").type(JsonFieldType.ARRAY).description("나의 팀 목록"),
+					fieldWithPath("data.teamOutlineList[].id").type(JsonFieldType.NUMBER).description("아이디"),
+					fieldWithPath("data.teamOutlineList[].title").type(JsonFieldType.STRING).description("이름"),
+					fieldWithPath("data.teamOutlineList[].image").type(JsonFieldType.STRING).description("프로필 이미지 URL"),
+					fieldWithPath("data.teamOutlineList[].currentPeople").type(JsonFieldType.NUMBER)
+						.description("현재 인원 수"),
+					fieldWithPath("data.teamOutlineList[].maxPeople").type(JsonFieldType.NUMBER).description("최대 인원 수")
 				)
 			));
 	}
