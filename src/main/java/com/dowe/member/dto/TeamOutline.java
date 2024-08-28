@@ -1,4 +1,10 @@
 package com.dowe.member.dto;
 
-public record TeamOutline() {
+public record TeamOutline(
+	Long id,
+	String title,
+	String image,
+	int currentPeople,
+	int maxPeople
+) {
 }
