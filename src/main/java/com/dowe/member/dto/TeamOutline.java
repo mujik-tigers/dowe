@@ -1,5 +1,9 @@
 package com.dowe.member.dto;
 
+import static com.dowe.util.AppConstants.*;
+
+import com.dowe.team.Team;
+
 public record TeamOutline(
 	Long id,
 	String title,
@@ -9,18 +13,14 @@ public record TeamOutline(
 ) {
 
 	public static TeamOutline of(
-		Long id,
-		String title,
-		String image,
-		int currentPeople,
-		int maxPeople
+		Team team
 	) {
 		return new TeamOutline(
-			id,
-			title,
-			image,
-			currentPeople,
-			maxPeople
+			team.getId(),
+			team.getTitle(),
+			team.getImage(),
+			team.getProfiles().size(),
+			TEAM_MAX_SIZE
 		);
 	}
 
