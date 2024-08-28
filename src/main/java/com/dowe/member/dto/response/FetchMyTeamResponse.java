@@ -1,4 +1,11 @@
 package com.dowe.member.dto.response;
 
-public record FetchMyTeamResponse() {
+import java.util.List;
+
+import com.dowe.member.dto.TeamOutline;
+
+public record FetchMyTeamResponse(
+	List<TeamOutline> teamOutlineList
+) {
+
 }
