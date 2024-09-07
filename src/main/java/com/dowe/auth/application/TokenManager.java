@@ -62,6 +62,7 @@ public class TokenManager {
 
 			return claims.get(MEMBER_ID, Long.class);
 		} catch (ExpiredJwtException e) {
+			currentTokenType = getTokenTypeFromClaims(e.getClaims());
 			throw new ExpiredTokenException(currentTokenType, needTokenType);
 		} catch (MalformedJwtException | SignatureException | ClaimJwtException e) {
 			throw new InvalidTokenException(FAKE, needTokenType);
