@@ -25,7 +25,9 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @Transactional
 @RequiredArgsConstructor
@@ -62,6 +64,9 @@ public class TokenManager {
 
 			return claims.get(MEMBER_ID, Long.class);
 		} catch (ExpiredJwtException e) {
+			currentTokenType = getTokenTypeFromClaims(e.getClaims());
+			log.info("TokenManager parse()");
+			log.info("currentTokenType: {}", currentTokenType);
 			throw new ExpiredTokenException(currentTokenType, needTokenType);
 		} catch (MalformedJwtException | SignatureException | ClaimJwtException e) {
 			throw new InvalidTokenException(FAKE, needTokenType);
