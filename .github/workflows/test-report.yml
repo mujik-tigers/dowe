@@ -24,6 +24,14 @@ jobs:
         env:
           REDIS_PASSWORD: 1234
 
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+        ports:
+          - 9200:9200
+        options: >-
+          --env discovery.type=single-node
+          --env xpack.security.enabled=false
+
       mysql:
         image: mysql:8.0.35
         env:
