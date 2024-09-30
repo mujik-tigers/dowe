@@ -1,5 +1,6 @@
 package com.dowe.team;
 
+import com.dowe.util.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Team {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Team extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

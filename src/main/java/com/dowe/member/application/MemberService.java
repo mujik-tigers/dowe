@@ -14,7 +14,7 @@ import com.dowe.exception.member.MemberRegisterException;
 import com.dowe.member.Member;
 import com.dowe.member.Provider;
 import com.dowe.member.dto.MemberName;
-import com.dowe.member.dto.TeamOutline;
+import com.dowe.team.dto.TeamOutline;
 import com.dowe.member.dto.response.FetchMyTeamResponse;
 import com.dowe.member.infrastructure.MemberRepository;
 import com.dowe.team.infrastructure.TeamRepository;

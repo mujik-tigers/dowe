@@ -1,4 +1,4 @@
-package com.dowe.member.dto;
+package com.dowe.team.dto;
 
 import static com.dowe.util.AppConstants.*;
 

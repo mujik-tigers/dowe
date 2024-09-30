@@ -1,9 +1,12 @@
 package com.dowe.team.presentation;
 
+import com.dowe.elasticsearch.dto.response.FindByTeamTitleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dowe.team.application.TeamService;
@@ -20,12 +23,31 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamController {
 
-	private final TeamService teamService;
+  private final TeamService teamService;
 
-	@PostMapping("/teams")
-	public ResponseEntity<ApiResponse<NewTeam>> create(@Login Long memberId, @ModelAttribute @Valid TeamSettings teamSettings) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(ApiResponse.created(ResponseResult.TEAM_CREATE_SUCCESS, teamService.create(memberId, teamSettings)));
-	}
+  @PostMapping("/teams")
+  public ResponseEntity<ApiResponse<NewTeam>> create(
+      @Login Long memberId,
+      @ModelAttribute @Valid TeamSettings teamSettings
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.created(
+                ResponseResult.TEAM_CREATE_SUCCESS,
+                teamService.create(memberId, teamSettings)
+            )
+        );
+  }
+
+  @GetMapping("/teams/search")
+  public ResponseEntity<ApiResponse<FindByTeamTitleResponse>> findByTeamTitle(
+      @RequestParam(required = false) String title
+  ) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.ok(
+                ResponseResult.TEAM_FIND_SUCCESS,
+                teamService.findByTeamTitle(title)
+            )
+        );
+  }
 
 }
