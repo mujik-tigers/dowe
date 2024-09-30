@@ -63,7 +63,7 @@ public class TeamService {
   public FindByTeamTitleResponse findByTeamTitle(
       String teamTitle
   ) {
-    List<TeamDocument> findTeamList = teamDocumentRepository.findByTeamTitle(teamTitle);
+    List<TeamDocument> findTeamList = teamDocumentRepository.findByTitle(teamTitle);
 
     List<TeamOutline> teamOutlineList = new ArrayList<>();
 
