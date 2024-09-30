@@ -6,5 +6,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface TeamDocumentRepository extends ElasticsearchRepository<TeamDocument, Long> {
 
-  List<TeamDocument> findByTeamName(String teamName);
+  List<TeamDocument> findByTeamTitle(String teamTitle);
 }
