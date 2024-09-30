@@ -21,35 +21,37 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamService {
 
-	private static final String TEAM_IMAGE_DIRECTORY = "team";
+  private static final String TEAM_IMAGE_DIRECTORY = "team";
 
-	private final TeamRepository teamRepository;
-	private final MemberRepository memberRepository;
-	private final ProfileRepository profileRepository;
-	private final S3Uploader s3Uploader;
+  private final TeamRepository teamRepository;
+  private final MemberRepository memberRepository;
+  private final ProfileRepository profileRepository;
+  private final S3Uploader s3Uploader;
 
-	@Transactional
-	public NewTeam create(Long memberId, TeamSettings teamSettings) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(MemberNotFoundException::new);
+  @Transactional
+  public NewTeam create(Long memberId, TeamSettings teamSettings) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
 
-		String image = null;
-		if (teamSettings.getImage() != null && !teamSettings.getImage().isEmpty()) {
-			image = s3Uploader.upload(TEAM_IMAGE_DIRECTORY, teamSettings.getImage());
-		}
+    String image = null;
+    if (teamSettings.getImage() != null && !teamSettings.getImage().isEmpty()) {
+      image = s3Uploader.upload(TEAM_IMAGE_DIRECTORY, teamSettings.getImage());
+    }
 
-		Team teamBuilder = Team.builder()
-			.title(StringUtil.removeExtraSpaces(teamSettings.getTitle()))
-			.description(StringUtil.removeExtraSpaces(teamSettings.getDescription()))
-			.image(image)
-			.manager(member)
-			.build();
+    Team teamBuilder = Team.builder()
+        .title(StringUtil.removeExtraSpaces(teamSettings.getTitle()))
+        .description(StringUtil.removeExtraSpaces(teamSettings.getDescription()))
+        .image(image)
+        .manager(member)
+        .build();
 
-		Team team = teamRepository.save(teamBuilder);
-		Profile profile = team.join(member);
-		profileRepository.save(profile);
+    Team team = teamRepository.save(teamBuilder);
+    Profile profile = team.join(member);
+    profileRepository.save(profile);
 
-		return new NewTeam(team.getId());
-	}
+    return new NewTeam(team.getId());
+  }
+
+
 
 }
