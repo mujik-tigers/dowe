@@ -1,6 +1,6 @@
 package com.dowe.elasticsearch.dto.response;
 
-public record SearchTeamResponse(
+public record FindByTeamTitleResponse(
     String title,
     String imageUrl
 ) {
