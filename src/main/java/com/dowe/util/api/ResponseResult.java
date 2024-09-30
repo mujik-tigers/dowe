@@ -18,6 +18,7 @@ public enum ResponseResult {
 
   // Team
   TEAM_CREATE_SUCCESS("팀 생성에 성공했습니다"),
+  TEAM_FIND_SUCCESS("팀 검색에 성공했습니다");
 
   private final String description;
 
