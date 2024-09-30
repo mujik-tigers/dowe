@@ -22,7 +22,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.dowe.RestDocsSupport;
 import com.dowe.member.dto.MemberName;
-import com.dowe.member.dto.TeamOutline;
+import com.dowe.team.dto.TeamOutline;
 import com.dowe.member.dto.response.FetchMyTeamResponse;
 import com.dowe.util.api.ResponseResult;
 
