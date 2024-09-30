@@ -20,12 +20,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamController {
 
-	private final TeamService teamService;
+  private final TeamService teamService;
 
-	@PostMapping("/teams")
-	public ResponseEntity<ApiResponse<NewTeam>> create(@Login Long memberId, @ModelAttribute @Valid TeamSettings teamSettings) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(ApiResponse.created(ResponseResult.TEAM_CREATE_SUCCESS, teamService.create(memberId, teamSettings)));
-	}
+  @PostMapping("/teams")
+  public ResponseEntity<ApiResponse<NewTeam>> create(
+      @Login Long memberId,
+      @ModelAttribute @Valid TeamSettings teamSettings
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.created(
+                ResponseResult.TEAM_CREATE_SUCCESS,
+                teamService.create(memberId, teamSettings)
+            )
+        );
+  }
 
 }
