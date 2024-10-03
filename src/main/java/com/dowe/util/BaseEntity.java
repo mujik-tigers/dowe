@@ -14,11 +14,9 @@ import lombok.Getter;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime createdAt;
+  @Column(updatable = false)
+  private LocalDateTime createdAt;
 
-	@LastModifiedDate
-	private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
 
 }
