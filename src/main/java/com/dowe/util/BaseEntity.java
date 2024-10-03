@@ -1,10 +1,10 @@
 package com.dowe.util;
 
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.ZoneOffset;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -18,5 +18,16 @@ public abstract class BaseEntity {
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
+    this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+  }
 
 }
