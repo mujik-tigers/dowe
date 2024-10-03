@@ -30,8 +30,8 @@ CREATE TABLE `team`
     `description` varchar(30),
     `image`       varchar(255),
     `manager_id`  bigint,
-    `created_at`  datetime,
-    `updated_at`  datetime
+    `created_at`  datetime(3),
+    `updated_at`  datetime(3)
 );
 
 CREATE TABLE `profile`
