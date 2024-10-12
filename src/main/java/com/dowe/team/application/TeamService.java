@@ -2,7 +2,6 @@ package com.dowe.team.application;
 
 import com.dowe.elasticsearch.document.TeamDocument;
 import com.dowe.elasticsearch.dto.response.FindByTeamTitleResponse;
-import com.dowe.elasticsearch.infrastructure.TeamDocumentRepository;
 import com.dowe.team.dto.TeamOutline;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +33,6 @@ public class TeamService {
   private final ProfileRepository profileRepository;
   private final S3Uploader s3Uploader;
 
-  private final TeamDocumentRepository teamDocumentRepository;
-
   @Transactional
   public NewTeam create(Long memberId, TeamSettings teamSettings) {
     Member member = memberRepository.findById(memberId)
@@ -58,23 +55,6 @@ public class TeamService {
     profileRepository.save(profile);
 
     return new NewTeam(team.getId());
-  }
-
-  public FindByTeamTitleResponse findByTeamTitle(
-      String teamTitle
-  ) {
-    List<TeamDocument> findTeamList = teamDocumentRepository.findByTitle(teamTitle);
-
-    List<TeamOutline> teamOutlineList = new ArrayList<>();
-
-    for (TeamDocument teamDocument : findTeamList) {
-      Long teamId = Long.valueOf(teamDocument.getId());
-      teamRepository.findById(teamId).ifPresent(team -> {
-        teamOutlineList.add(TeamOutline.of(team));
-      });
-    }
-
-    return new FindByTeamTitleResponse(teamOutlineList);
   }
 
 }
