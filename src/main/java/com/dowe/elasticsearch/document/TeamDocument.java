@@ -9,7 +9,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class TeamDocument {
 
   @Id
-  private String id;
+  private Long id;
   private String title;
+  private String description;
+  private String image;
 
 }

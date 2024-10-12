@@ -1,5 +1,6 @@
 package com.dowe.team.presentation;
 
+import com.dowe.elasticsearch.application.SearchService;
 import com.dowe.elasticsearch.dto.response.FindByTeamTitleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class TeamController {
 
   private final TeamService teamService;
+  private final SearchService searchService;
 
   @PostMapping("/teams")
   public ResponseEntity<ApiResponse<NewTeam>> create(
@@ -40,12 +42,20 @@ public class TeamController {
 
   @GetMapping("/teams/search")
   public ResponseEntity<ApiResponse<FindByTeamTitleResponse>> findByTeamTitle(
-      @RequestParam(required = false) String title
+      @RequestParam(defaultValue = "5") int size,
+      @RequestParam(required = false) String title,
+      @RequestParam(defaultValue = "0") long lastUnixTimestamp,
+      @RequestParam(defaultValue = "0") String lastTieBreakerId
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.ok(
                 ResponseResult.TEAM_FIND_SUCCESS,
-                teamService.findByTeamTitle(title)
+                searchService.findByTeamTitle(
+                    size,
+                    title,
+                    lastUnixTimestamp,
+                    lastTieBreakerId
+                )
             )
         );
   }

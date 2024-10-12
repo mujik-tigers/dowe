@@ -1,25 +1,22 @@
-package com.dowe.team.dto;
+package com.dowe.elasticsearch.mapper;
 
 import static com.dowe.util.AppConstants.*;
 
 import com.dowe.elasticsearch.document.TeamDocument;
+import com.dowe.team.dto.TeamOutline;
+import org.springframework.stereotype.Component;
 
-public record TeamOutline(
-    Long id,
-    String title,
-    String image,
-    int currentPeople,
-    int maxPeople
-) {
+@Component
+public class TeamMapper {
 
-  public static TeamOutline of(
+  public TeamOutline toTeamOutline(
       TeamDocument teamDocument,
       int currentPeople
   ) {
     return new TeamOutline(
         teamDocument.getId(),
         teamDocument.getTitle(),
-        teamDocument.getImage(),
+        teamDocument.getDescription(),
         currentPeople,
         TEAM_MAX_SIZE
     );
