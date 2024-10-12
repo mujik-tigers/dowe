@@ -1,5 +1,6 @@
 package com.dowe;
 
+import com.dowe.elasticsearch.application.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,5 +50,8 @@ public abstract class RestDocsSupport {
 
 	@MockBean
 	protected TeamService teamService;
+
+	@MockBean
+	protected SearchService searchService;
 
 }
