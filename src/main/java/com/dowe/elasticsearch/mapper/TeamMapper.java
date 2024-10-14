@@ -16,7 +16,7 @@ public class TeamMapper {
         teamDocument.getId(),
         teamDocument.getTitle(),
         teamDocument.getDescription(),
-        currentPeople,
+        teamDocument.getMemberCount(),
         TEAM_MAX_SIZE
     );
   }
