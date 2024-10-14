@@ -10,14 +10,13 @@ import org.springframework.stereotype.Component;
 public class TeamMapper {
 
   public TeamOutline toTeamOutline(
-      TeamDocument teamDocument,
-      int currentPeople
+      TeamDocument teamDocument
   ) {
     return new TeamOutline(
         teamDocument.getId(),
         teamDocument.getTitle(),
         teamDocument.getDescription(),
-        currentPeople,
+        teamDocument.getMemberCount(),
         TEAM_MAX_SIZE
     );
   }
