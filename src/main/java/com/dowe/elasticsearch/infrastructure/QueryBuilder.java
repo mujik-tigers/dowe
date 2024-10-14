@@ -16,7 +16,7 @@ public class QueryBuilder {
       String title,
       int requestSize,
       Long lastUnixTimeStamp,
-      String lastTieBreakerId
+      Long lastTieBreakerId
   ) {
     NativeQueryBuilder nativeQueryBuilder = new NativeQueryBuilder()
         .withQuery(new Builder()
