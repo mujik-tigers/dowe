@@ -1,7 +1,9 @@
 package com.dowe.elasticsearch.application;
 
+import static com.dowe.util.AppConstants.HAS_MORE_LAST_HIT_OFFSET;
 import static com.dowe.util.AppConstants.LAST_TIE_BREAKER_ID_INDEX;
 import static com.dowe.util.AppConstants.LAST_UNIX_TIMESTAMP_INDEX;
+import static com.dowe.util.AppConstants.NO_MORE_LAST_HIT_OFFSET;
 
 import com.dowe.elasticsearch.document.TeamDocument;
 import com.dowe.elasticsearch.dto.response.SearchTeamsByTitleResponse;
@@ -9,7 +11,6 @@ import com.dowe.elasticsearch.infrastructure.ElasticsearchRepository;
 import com.dowe.elasticsearch.mapper.TeamMapper;
 import com.dowe.team.dto.TeamOutline;
 import com.dowe.team.infrastructure.TeamRepository;
-import com.dowe.util.AppConstants;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,9 @@ public class SearchService {
       List<SearchHit<TeamDocument>> teamHits
   ) {
     if (hasMore) {
-      return teamHits.get(teamHits.size() - 2).getSortValues();
+      return teamHits.get(teamHits.size() - HAS_MORE_LAST_HIT_OFFSET).getSortValues();
     }
-    return teamHits.get(teamHits.size() - 1).getSortValues();
+    return teamHits.get(teamHits.size() - NO_MORE_LAST_HIT_OFFSET).getSortValues();
   }
 
   private List<TeamOutline> convertToTeamOutlines(
