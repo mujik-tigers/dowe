@@ -16,5 +16,7 @@ public final class AppConstants {
 	public static final String UPDATED_AT = "updated_at";
 	public static final String TIE_BREAKER_ID = "tie_breaker_id";
 	public static final int TEAM_MAX_SIZE = 10;
+	public static final int LAST_UNIX_TIMESTAMP_INDEX = 0;
+	public static final int LAST_TIE_BREAKER_ID_INDEX = 1;
 
 }
