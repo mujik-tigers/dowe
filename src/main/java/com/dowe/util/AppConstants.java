@@ -18,5 +18,7 @@ public final class AppConstants {
 	public static final int TEAM_MAX_SIZE = 10;
 	public static final int LAST_UNIX_TIMESTAMP_INDEX = 0;
 	public static final int LAST_TIE_BREAKER_ID_INDEX = 1;
+	public static final int NO_MORE_LAST_HIT_OFFSET = 1;
+	public static final int HAS_MORE_LAST_HIT_OFFSET = 2;
 
 }
