@@ -135,13 +135,13 @@ class MemberControllerTest extends RestDocsSupport {
 					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
 					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
 					fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-					fieldWithPath("data.teamOutlines[]").type(JsonFieldType.ARRAY).description("나의 팀 목록"),
-					fieldWithPath("data.teamOutlines[].id").type(JsonFieldType.NUMBER).description("아이디"),
-					fieldWithPath("data.teamOutlines[].title").type(JsonFieldType.STRING).description("이름"),
-					fieldWithPath("data.teamOutlines[].image").type(JsonFieldType.STRING).description("프로필 이미지 URL"),
-					fieldWithPath("data.teamOutlines[].currentPeople").type(JsonFieldType.NUMBER)
+					fieldWithPath("data.teamOutlineList[]").type(JsonFieldType.ARRAY).description("나의 팀 목록"),
+					fieldWithPath("data.teamOutlineList[].id").type(JsonFieldType.NUMBER).description("아이디"),
+					fieldWithPath("data.teamOutlineList[].title").type(JsonFieldType.STRING).description("이름"),
+					fieldWithPath("data.teamOutlineList[].image").type(JsonFieldType.STRING).description("프로필 이미지 URL"),
+					fieldWithPath("data.teamOutlineList[].currentPeople").type(JsonFieldType.NUMBER)
 						.description("현재 인원 수"),
-					fieldWithPath("data.teamOutlines[].maxPeople").type(JsonFieldType.NUMBER).description("최대 인원 수")
+					fieldWithPath("data.teamOutlineList[].maxPeople").type(JsonFieldType.NUMBER).description("최대 인원 수")
 				)
 			));
 	}
