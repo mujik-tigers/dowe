@@ -1,7 +1,7 @@
 package com.dowe.elasticsearch.presentation;
 
 import com.dowe.elasticsearch.application.SearchService;
-import com.dowe.elasticsearch.dto.response.SearchByTeamTitleResponse;
+import com.dowe.elasticsearch.dto.response.SearchTeamsByTitleResponse;
 import com.dowe.util.api.ApiResponse;
 import com.dowe.util.api.ResponseResult;
 import lombok.RequiredArgsConstructor;
@@ -20,18 +20,18 @@ public class SearchController {
   private final SearchService searchService;
 
   @GetMapping("/teams")
-  public ResponseEntity<ApiResponse<SearchByTeamTitleResponse>> searchTeamsByTitle(
+  public ResponseEntity<ApiResponse<SearchTeamsByTitleResponse>> searchTeamsByTitle(
       @RequestParam(required = true) String title,
-      @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "0") Long lastUnixTimestamp,
-      @RequestParam(defaultValue = "0") String lastTieBreakerId
+      @RequestParam(defaultValue = "0") Long lastTieBreakerId,
+      @RequestParam(name = "size", defaultValue = "10") int requestSize
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.ok(
                 ResponseResult.TEAM_FIND_SUCCESS,
-                searchService.searchByTeamTitle(
-                    size,
+                searchService.searchTeamsByTitle(
                     title,
+                    requestSize,
                     lastUnixTimestamp,
                     lastTieBreakerId
                 )
