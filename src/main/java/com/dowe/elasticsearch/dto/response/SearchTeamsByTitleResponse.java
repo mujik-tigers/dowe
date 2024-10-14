@@ -6,8 +6,8 @@ import java.util.List;
 public record SearchTeamsByTitleResponse(
     boolean hasMore,
     Long lastUnixTimestamp,
-    String lastTieBreakerId,
     List<TeamOutline> teamOutlineList
+    Long lastTieBreakerId,
 ) {
 
 }
