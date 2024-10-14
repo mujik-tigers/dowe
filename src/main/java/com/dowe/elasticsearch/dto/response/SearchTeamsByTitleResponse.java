@@ -3,11 +3,11 @@ package com.dowe.elasticsearch.dto.response;
 import com.dowe.team.dto.TeamOutline;
 import java.util.List;
 
-public record FindByTeamTitleResponse(
+public record SearchTeamsByTitleResponse(
     boolean hasMore,
     Long lastUnixTimestamp,
-    String lastTieBreakerId,
-    List<TeamOutline> teamOutlineList
+    Long lastTieBreakerId,
+    List<TeamOutline> teamOutlines
 ) {
 
 }

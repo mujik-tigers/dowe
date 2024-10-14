@@ -1,10 +1,5 @@
 package com.dowe.team.application;
 
-import com.dowe.elasticsearch.document.TeamDocument;
-import com.dowe.elasticsearch.dto.response.FindByTeamTitleResponse;
-import com.dowe.team.dto.TeamOutline;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,13 +1,10 @@
 package com.dowe.team.presentation;
 
 import com.dowe.elasticsearch.application.SearchService;
-import com.dowe.elasticsearch.dto.response.FindByTeamTitleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dowe.team.application.TeamService;
@@ -39,25 +36,4 @@ public class TeamController {
             )
         );
   }
-
-  @GetMapping("/teams/search")
-  public ResponseEntity<ApiResponse<FindByTeamTitleResponse>> findByTeamTitle(
-      @RequestParam(defaultValue = "5") int size,
-      @RequestParam(required = false) String title,
-      @RequestParam(defaultValue = "0") long lastUnixTimestamp,
-      @RequestParam(defaultValue = "0") String lastTieBreakerId
-  ) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.ok(
-                ResponseResult.TEAM_FIND_SUCCESS,
-                searchService.findByTeamTitle(
-                    size,
-                    title,
-                    lastUnixTimestamp,
-                    lastTieBreakerId
-                )
-            )
-        );
-  }
-
 }
