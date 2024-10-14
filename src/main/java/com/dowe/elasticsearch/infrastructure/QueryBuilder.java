@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class QueryBuilder {
 
   public NativeQuery buildSearchTeamsByTitleQuery(
-      int size,
       String title,
+      int requestSize,
       Long lastUnixTimeStamp,
       String lastTieBreakerId
   ) {
@@ -27,7 +27,7 @@ public class QueryBuilder {
             .field(f -> f.field(UPDATED_AT).order(Asc)))
         .withSort(sort -> sort
             .field(f -> f.field(TIE_BREAKER_ID).order(Asc)))
-        .withMaxResults(size + 1);
+        .withMaxResults(requestSize + 1);
 
     if (lastUnixTimeStamp != null && lastTieBreakerId != null) {
       nativeQueryBuilder.withSearchAfter(List.of(lastUnixTimeStamp, lastTieBreakerId));
