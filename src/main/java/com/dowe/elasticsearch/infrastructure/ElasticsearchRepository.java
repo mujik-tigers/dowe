@@ -15,15 +15,15 @@ public class ElasticsearchRepository {
   private final QueryBuilder queryBuilder;
 
   public SearchHits<TeamDocument> searchTeamsByTitle(
-      int size,
       String title,
+      int requestSize,
       Long lastUnixTimestamp,
       String lastTieBreakerId
   ) {
 
     NativeQuery searchQuery = queryBuilder.buildSearchTeamsByTitleQuery(
-        size,
         title,
+        requestSize,
         lastUnixTimestamp,
         lastTieBreakerId
     );
