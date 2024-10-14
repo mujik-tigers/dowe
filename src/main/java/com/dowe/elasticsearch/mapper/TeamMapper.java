@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 public class TeamMapper {
 
   public TeamOutline toTeamOutline(
-      TeamDocument teamDocument,
-      int currentPeople
+      TeamDocument teamDocument
   ) {
     return new TeamOutline(
         teamDocument.getId(),
