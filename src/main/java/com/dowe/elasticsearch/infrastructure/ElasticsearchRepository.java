@@ -18,7 +18,7 @@ public class ElasticsearchRepository {
       String title,
       int requestSize,
       Long lastUnixTimestamp,
-      String lastTieBreakerId
+      Long lastTieBreakerId
   ) {
 
     NativeQuery searchQuery = queryBuilder.buildSearchTeamsByTitleQuery(
