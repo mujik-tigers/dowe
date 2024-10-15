@@ -8,9 +8,8 @@ import static com.dowe.util.AppConstants.NO_MORE_LAST_HIT_OFFSET;
 import com.dowe.elasticsearch.document.TeamDocument;
 import com.dowe.elasticsearch.dto.response.SearchTeamsByTitleResponse;
 import com.dowe.elasticsearch.infrastructure.ElasticsearchRepository;
-import com.dowe.elasticsearch.mapper.TeamMapper;
-import com.dowe.team.dto.TeamOutline;
-import com.dowe.team.infrastructure.TeamRepository;
+import com.dowe.elasticsearch.mapper.TeamDocumentMapper;
+import com.dowe.team.dto.TeamDocumentOutline;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SearchService {
 
-  private final TeamRepository teamRepository;
   private final ElasticsearchRepository elasticsearchRepository;
-  private final TeamMapper teamMapper;
+  private final TeamDocumentMapper teamDocumentMapper;
 
   public SearchTeamsByTitleResponse searchTeamsByTitle(
       String title,
@@ -50,7 +48,7 @@ public class SearchService {
         teamHits
     );
 
-    List<TeamOutline> teamOutlines = convertToTeamOutlines(
+    List<TeamDocumentOutline> teamDocumentOutlines = convertToTeamDocumentOutlines(
         requestSize,
         teamHits
     );
@@ -59,7 +57,7 @@ public class SearchService {
         hasMore,
         getLastUnixTimestamp(lastSortValues),
         getLastTieBreakerId(lastSortValues),
-        teamOutlines
+        teamDocumentOutlines
     );
   }
 
@@ -73,12 +71,12 @@ public class SearchService {
     return teamHits.get(teamHits.size() - NO_MORE_LAST_HIT_OFFSET).getSortValues();
   }
 
-  private List<TeamOutline> convertToTeamOutlines(
+  private List<TeamDocumentOutline> convertToTeamDocumentOutlines(
       int requestSize,
       List<SearchHit<TeamDocument>> teamHits
   ) {
     return teamHits.stream()
-        .map(hit -> teamMapper.toTeamOutline(
+        .map(hit -> teamDocumentMapper.toTeamDocumentOutline(
                 hit.getContent()
             )
         )
