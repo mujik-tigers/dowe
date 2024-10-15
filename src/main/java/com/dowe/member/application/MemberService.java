@@ -2,6 +2,7 @@ package com.dowe.member.application;
 
 import static com.dowe.util.RandomUtil.*;
 
+import com.dowe.elasticsearch.mapper.TeamMapper;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,60 +27,64 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 
-	private final MemberRepository memberRepository;
-	private final MemberCodeStorage memberCodeStorage;
-	private final TeamRepository teamRepository;
+  private final TeamMapper teamMapper;
 
-	public Optional<Member> findBy(Provider provider, String authId) {
-		return memberRepository.findByProvider(provider, authId);
-	}
+  private final MemberRepository memberRepository;
+  private final MemberCodeStorage memberCodeStorage;
+  private final TeamRepository teamRepository;
 
-	@Transactional
-	public Member register(Provider provider, String authId) {
-		Member member = Member.builder()
-			.provider(provider)
-			.authId(authId)
-			.name(generateMemberName())
-			.code(generateUniqueMemberCode(provider))
-			.build();
+  public Optional<Member> findBy(Provider provider, String authId) {
+    return memberRepository.findByProvider(provider, authId);
+  }
 
-		try {
-			return memberRepository.save(member);
-		} catch (DataIntegrityViolationException exception) {
-			throw new MemberRegisterException(provider, authId);
-		}
-	}
+  @Transactional
+  public Member register(Provider provider, String authId) {
+    Member member = Member.builder()
+        .provider(provider)
+        .authId(authId)
+        .name(generateMemberName())
+        .code(generateUniqueMemberCode(provider))
+        .build();
 
-	private String generateUniqueMemberCode(Provider provider) {
-		String code = generateMemberCode(provider);
-		while (!memberCodeStorage.saveMemberCodeIfUnique(code)) {
-			code = generateMemberCode(provider);
-		}
+    try {
+      return memberRepository.save(member);
+    } catch (DataIntegrityViolationException exception) {
+      throw new MemberRegisterException(provider, authId);
+    }
+  }
 
-		return code;
-	}
+  private String generateUniqueMemberCode(Provider provider) {
+    String code = generateMemberCode(provider);
+    while (!memberCodeStorage.saveMemberCodeIfUnique(code)) {
+      code = generateMemberCode(provider);
+    }
 
-	@Transactional
-	public MemberName updateName(Long memberId, String newName) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(MemberNotFoundException::new);
+    return code;
+  }
 
-		newName = StringUtil.removeExtraSpaces(newName);
-		member.updateName(newName);
+  @Transactional
+  public MemberName updateName(Long memberId, String newName) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
 
-		return new MemberName(newName);
-	}
+    newName = StringUtil.removeExtraSpaces(newName);
+    member.updateName(newName);
 
-	public FetchMyTeamResponse fetchMyTeam(Long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(MemberNotFoundException::new);
+    return new MemberName(newName);
+  }
 
-		List<TeamOutline> teamOutlineList = teamRepository.findAllTeamsByMemberId(member.getId())
-			.stream()
-			.map(TeamOutline::of)
-			.toList();
+  public FetchMyTeamResponse fetchMyTeam(
+      Long memberId
+  ) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
 
-		return FetchMyTeamResponse.from(teamOutlineList);
-	}
+    List<TeamOutline> teamOutlines = teamRepository.findAllTeamsByMemberId(member.getId())
+        .stream()
+        .map(teamMapper::toTeamOutline)
+        .toList();
+
+    return FetchMyTeamResponse.from(teamOutlines);
+  }
 
 }

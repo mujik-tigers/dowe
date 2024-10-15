@@ -1,15 +1,15 @@
 package com.dowe.elasticsearch.mapper;
 
-import com.dowe.team.Team;
-import com.dowe.team.dto.TeamOutline;
+import com.dowe.elasticsearch.document.TeamDocument;
+import com.dowe.team.dto.TeamDocumentOutline;
 import com.dowe.util.AppConstants;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", imports = AppConstants.class)
-public interface TeamMapper {
+public interface TeamDocumentMapper {
 
   @Mapping(target = "maxPeople", expression = "java(AppConstants.TEAM_MAX_SIZE)")
-  TeamOutline toTeamOutline(Team team);
+  TeamDocumentOutline toTeamDocumentOutline(TeamDocument teamDocument);
 
 }
