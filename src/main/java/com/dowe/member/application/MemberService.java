@@ -27,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 
+  private final TeamMapper teamMapper;
+
   private final MemberRepository memberRepository;
   private final MemberCodeStorage memberCodeStorage;
   private final TeamRepository teamRepository;
@@ -77,10 +79,10 @@ public class MemberService {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
 
-		List<TeamOutline> teamOutlineList = teamRepository.findAllTeamsByMemberId(member.getId())
-			.stream()
-			.map(TeamOutline::of)
-			.toList();
+    List<TeamOutline> teamOutlines = teamRepository.findAllTeamsByMemberId(member.getId())
+        .stream()
+        .map(teamMapper::toTeamOutline)
+        .toList();
 
     return FetchMyTeamResponse.from(teamOutlines);
   }
