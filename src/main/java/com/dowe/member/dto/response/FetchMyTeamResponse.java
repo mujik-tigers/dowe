@@ -5,14 +5,14 @@ import java.util.List;
 import com.dowe.team.dto.TeamOutline;
 
 public record FetchMyTeamResponse(
-	List<TeamOutline> teamOutlineList
+	List<TeamOutline> teamOutlines
 ) {
 
 	public static FetchMyTeamResponse from(
-		List<TeamOutline> teamOutlineList
+		List<TeamOutline> teamOutlines
 	) {
 		return new FetchMyTeamResponse(
-			teamOutlineList
+			teamOutlines
 		);
 	}
 

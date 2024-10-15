@@ -28,15 +28,14 @@ public class SearchController {
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.ok(
-                ResponseResult.TEAM_FIND_SUCCESS,
-                searchService.searchTeamsByTitle(
-                    title,
-                    requestSize,
-                    lastUnixTimestamp,
-                    lastTieBreakerId
-                )
+            ResponseResult.TEAM_FIND_SUCCESS,
+            searchService.searchTeamsByTitle(
+                title,
+                requestSize,
+                lastUnixTimestamp,
+                lastTieBreakerId
             )
-        );
+        ));
   }
 
 }
