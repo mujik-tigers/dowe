@@ -28,122 +28,129 @@ import com.dowe.util.api.ResponseResult;
 
 class MemberControllerTest extends RestDocsSupport {
 
-	@Test
-	@DisplayName("이름 변경 성공")
-	void updateNameSuccess() throws Exception {
-		// given
-		String authorizationHeader = BEARER + "accessToken";
-		MemberName memberName = new MemberName(" your new   name");
+  @Test
+  @DisplayName("이름 변경 성공")
+  void updateNameSuccess() throws Exception {
+    // given
+    String authorizationHeader = BEARER + "accessToken";
+    MemberName memberName = new MemberName(" your new   name");
 
-		given(tokenManager.parse(anyString(), any()))
-			.willReturn(1L);
-		given(memberService.updateName(anyLong(), anyString()))
-			.willReturn(new MemberName("your new name"));
+    given(tokenManager.parse(anyString(), any()))
+        .willReturn(1L);
+    given(memberService.updateName(anyLong(), anyString()))
+        .willReturn(new MemberName("your new name"));
 
-		// when / then
-		mockMvc.perform(patch("/members/names")
-				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-				.content(objectMapper.writeValueAsString(memberName))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
-			.andExpect(jsonPath("$.result").value(ResponseResult.MEMBER_NAME_UPDATE_SUCCESS.getDescription()))
-			.andExpect(jsonPath("$.data.newName").value("your new name"))
-			.andDo(document("member-name-update-success",
-				preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
-					fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-					fieldWithPath("data.newName").type(JsonFieldType.STRING).description("새로운 이름")
-				)
-			));
-	}
+    // when / then
+    mockMvc.perform(patch("/members/names")
+            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .content(objectMapper.writeValueAsString(memberName))
+            .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+        .andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+        .andExpect(
+            jsonPath("$.result").value(ResponseResult.MEMBER_NAME_UPDATE_SUCCESS.getDescription()))
+        .andExpect(jsonPath("$.data.newName").value("your new name"))
+        .andDo(document("member-name-update-success",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                fieldWithPath("data.newName").type(JsonFieldType.STRING).description("새로운 이름")
+            )
+        ));
+  }
 
-	@Test
-	@DisplayName("이름 변경 실패 : 이름 길이 20자 초과")
-	void updateNameFail() throws Exception {
-		// given
-		String authorizationHeader = BEARER + "accessToken";
-		MemberName memberName = new MemberName("your name is too long...");
+  @Test
+  @DisplayName("이름 변경 실패 : 이름 길이 20자 초과")
+  void updateNameFail() throws Exception {
+    // given
+    String authorizationHeader = BEARER + "accessToken";
+    MemberName memberName = new MemberName("your name is too long...");
 
-		given(tokenManager.parse(anyString(), any()))
-			.willReturn(1L);
+    given(tokenManager.parse(anyString(), any()))
+        .willReturn(1L);
 
-		// when / then
-		mockMvc.perform(patch("/members/names")
-				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-				.content(objectMapper.writeValueAsString(memberName))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print())
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
-			.andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
-			.andDo(document("member-name-update-fail",
-				preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
-					fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
-					fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
-					fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지")
-				)
-			));
-	}
+    // when / then
+    mockMvc.perform(patch("/members/names")
+            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .content(objectMapper.writeValueAsString(memberName))
+            .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+        .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
+        .andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
+        .andDo(document("member-name-update-fail",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+                fieldWithPath("data").type(JsonFieldType.ARRAY).description("응답 데이터"),
+                fieldWithPath("data[].type").type(JsonFieldType.STRING).description("오류 타입"),
+                fieldWithPath("data[].message").type(JsonFieldType.STRING).description("오류 메시지")
+            )
+        ));
+  }
 
-	@Test
-	@DisplayName("나의 팀 목록 조회 성공")
-	void fetchMyTeam() throws Exception {
-		// given
-		String authorizationHeader = BEARER + "accessToken";
+  @Test
+  @DisplayName("나의 팀 목록 조회 성공")
+  void fetchMyTeam() throws Exception {
+    // given
+    String authorizationHeader = BEARER + "accessToken";
 
-		TeamOutline teamOutline = new TeamOutline(11L,
-			"매일 런닝 크루",
-			"https://source/image.jpg",
-			3,
-			TEAM_MAX_SIZE
-		);
+    TeamOutline teamOutline = new TeamOutline(11L,
+        "매일 런닝 크루",
+        "https://source/image.jpg",
+        3,
+        TEAM_MAX_SIZE
+    );
 
-		FetchMyTeamResponse fetchMyTeamResponse = FetchMyTeamResponse.from(List.of(teamOutline));
+    FetchMyTeamResponse fetchMyTeamResponse = FetchMyTeamResponse.from(List.of(teamOutline));
 
-		given(tokenManager.parse(anyString(), any()))
-			.willReturn(1L);
-		given(memberService.fetchMyTeam(anyLong()))
-			.willReturn(fetchMyTeamResponse);
+    given(tokenManager.parse(anyString(), any()))
+        .willReturn(1L);
+    given(memberService.fetchMyTeam(anyLong()))
+        .willReturn(fetchMyTeamResponse);
 
-		// when / then
-		mockMvc.perform(get("/members/teams")
-				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-			.andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
-			.andExpect(jsonPath("$.result").value(ResponseResult.MY_TEAM_LIST_FETCH_SUCCESS.getDescription()))
-			.andDo(document("my-team-list-fetch-success",
-				preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-					fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-					fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
-					fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-					fieldWithPath("data.teamOutlineList[]").type(JsonFieldType.ARRAY).description("나의 팀 목록"),
-					fieldWithPath("data.teamOutlineList[].id").type(JsonFieldType.NUMBER).description("아이디"),
-					fieldWithPath("data.teamOutlineList[].title").type(JsonFieldType.STRING).description("이름"),
-					fieldWithPath("data.teamOutlineList[].image").type(JsonFieldType.STRING).description("프로필 이미지 URL"),
-					fieldWithPath("data.teamOutlineList[].currentPeople").type(JsonFieldType.NUMBER)
-						.description("현재 인원 수"),
-					fieldWithPath("data.teamOutlineList[].maxPeople").type(JsonFieldType.NUMBER).description("최대 인원 수")
-				)
-			));
-	}
+    // when / then
+    mockMvc.perform(get("/members/teams")
+            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+        .andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
+        .andExpect(
+            jsonPath("$.result").value(ResponseResult.MY_TEAM_LIST_FETCH_SUCCESS.getDescription()))
+        .andDo(document("my-team-list-fetch-success",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                fieldWithPath("result").type(JsonFieldType.STRING).description("결과"),
+                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                fieldWithPath("data.teamOutlines[]").type(JsonFieldType.ARRAY)
+                    .description("나의 팀 목록"),
+                fieldWithPath("data.teamOutlines[].id").type(JsonFieldType.NUMBER)
+                    .description("아이디"),
+                fieldWithPath("data.teamOutlines[].title").type(JsonFieldType.STRING)
+                    .description("이름"),
+                fieldWithPath("data.teamOutlines[].image").type(JsonFieldType.STRING)
+                    .description("프로필 이미지 URL"),
+                fieldWithPath("data.teamOutlines[].currentPeople").type(JsonFieldType.NUMBER)
+                    .description("현재 인원 수"),
+                fieldWithPath("data.teamOutlines[].maxPeople").type(JsonFieldType.NUMBER)
+                    .description("최대 인원 수")
+            )
+        ));
+  }
 
 }
