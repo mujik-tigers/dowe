@@ -35,7 +35,7 @@ jobs:
       mysql:
         image: mysql:8.0.35
         env:
-          MYSQL_DATABASE: dowe
+          MYSQL_DATABASE: dowith
           MYSQL_USER: test
           MYSQL_PASSWORD: 1234
           MYSQL_ROOT_PASSWORD: 1234
