@@ -9,6 +9,7 @@ on:
       - dev
 
 permissions:
+  id-token: write
   checks: write
   pull-requests: write
 
@@ -43,6 +44,12 @@ jobs:
           - 3306:3306
 
     steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Check out
         uses: actions/checkout@v3
 
