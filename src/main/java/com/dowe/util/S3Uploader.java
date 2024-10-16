@@ -1,49 +1,71 @@
 package com.dowe.util;
 
 import java.io.IOException;
+import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Utilities;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class S3Uploader {
 
-	private static final String BUCKET_NAME = "dowe-s3";
-	private static final String DIRECTORY_SEPARATOR = "/";
-	private static final String EXTENSION_SEPARATOR = ".";
+  private final S3Client s3Client;
 
-	private final AmazonS3 amazonS3Client;
+  @Value("${cloud.aws.s3.bucket}")
+  private String bucketName;
 
-	public String upload(String directory, MultipartFile file) {
-		String fileName = directory + DIRECTORY_SEPARATOR +
-			RandomUtil.generateFileNamePrefix() + System.currentTimeMillis() +
-			EXTENSION_SEPARATOR + StringUtils.getFilenameExtension(file.getOriginalFilename());
+  public String upload(String directory, MultipartFile file) {
+    String fileName = generateRandomFileName(directory, file);
+    try {
+      PutObjectRequest putObjectRequest = getPutObjectRequest(fileName);
+      RequestBody requestBody = getFileRequestBody(file);
+      s3Client.putObject(putObjectRequest, requestBody);
+    } catch (IOException e) {
+      log.error("Failed to upload file to S3: {}", e.getMessage());
+      throw new RuntimeException("Failed to upload file", e);
+    }
 
-		try {
-			PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, fileName, file.getInputStream(), generateObjectMetadata(file));
+    return findUploadKeyUrl(fileName);
+  }
 
-			amazonS3Client.putObject(putObjectRequest);
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+  private String generateRandomFileName(String directory, MultipartFile file) {
+    return directory + "/" +
+        RandomUtil.generateFileNamePrefix() + "_" + System.currentTimeMillis() +
+        "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
+  }
 
-		return amazonS3Client.getUrl(BUCKET_NAME, fileName).toString();
-	}
+  private PutObjectRequest getPutObjectRequest(String key) {
+    return PutObjectRequest.builder()
+        .bucket(bucketName)
+        .key(key)
+        .contentType("image/png")
+        .build();
+  }
 
-	private ObjectMetadata generateObjectMetadata(MultipartFile file) {
-		ObjectMetadata objectMetadata = new ObjectMetadata();
-		objectMetadata.setContentType(file.getContentType());
-		objectMetadata.setContentLength(file.getSize());
+  private RequestBody getFileRequestBody(MultipartFile file) throws IOException {
+    return RequestBody.fromInputStream(file.getInputStream(), file.getSize());
+  }
 
-		return objectMetadata;
-	}
+  private String findUploadKeyUrl(String key) {
+    S3Utilities s3Utilities = s3Client.utilities();
+    GetUrlRequest getUrlRequest = GetUrlRequest.builder()
+        .bucket(bucketName)
+        .key(key)
+        .build();
 
+    URL url = s3Utilities.getUrl(getUrlRequest);
+    return url.toString();
+  }
 }
