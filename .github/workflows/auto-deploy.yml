@@ -7,8 +7,8 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: dowith-s3
-  CODE_DEPLOY_APPLICATION_NAME: dowith-codedeploy-application
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: dowith-codedeploy-group
+  CODE_DEPLOY_APPLICATION_NAME: dowith-code-deploy-application
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: dowith-code-deploy-group
   working-directory: .
 
 permissions:
