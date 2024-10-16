@@ -8,6 +8,9 @@ on:
     branches:
       - dev
 
+env:
+  AWS_REGION: ap-northeast-2
+
 permissions:
   id-token: write
   checks: write
