@@ -8,7 +8,11 @@ on:
     branches:
       - dev
 
+env:
+  AWS_REGION: ap-northeast-2
+
 permissions:
+  id-token: write
   checks: write
   pull-requests: write
 
@@ -35,7 +39,7 @@ jobs:
       mysql:
         image: mysql:8.0.35
         env:
-          MYSQL_DATABASE: dowe
+          MYSQL_DATABASE: dowith
           MYSQL_USER: test
           MYSQL_PASSWORD: 1234
           MYSQL_ROOT_PASSWORD: 1234
@@ -43,6 +47,12 @@ jobs:
           - 3306:3306
 
     steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Check out
         uses: actions/checkout@v3
 
