@@ -46,6 +46,7 @@ class OAuthProviderTest extends IntegrationTestSupport {
 	void getAuthId(Provider provider) throws Exception {
 		// given
 		String authorizationCode = "properCode";
+		String origin = "https://dowith.today";
 
 		AccessToken accessToken = new AccessToken("properAccessToken");
 		UserResource userResource = new UserResource("12312309");
@@ -72,7 +73,7 @@ class OAuthProviderTest extends IntegrationTestSupport {
 				.withBody(objectMapper.writeValueAsString(userResource)));
 
 		// when
-		String authId = authProvider.authenticate(provider, authorizationCode);
+		String authId = authProvider.authenticate(origin, provider, authorizationCode);
 
 		// then
 		assertThat(authId).isEqualTo(userResource.getId());
@@ -83,6 +84,8 @@ class OAuthProviderTest extends IntegrationTestSupport {
 	void getAuthIdFail() throws Exception {
 		// given
 		String invalidCode = "invalidCode";
+		String origin = "https://dowith.today";
+
 		mockServer
 			.when(HttpRequest.request()
 				.withMethod("POST")
@@ -93,7 +96,7 @@ class OAuthProviderTest extends IntegrationTestSupport {
 				.withContentType(MediaType.APPLICATION_JSON));
 
 		// when // then
-		assertThatThrownBy(() -> authProvider.authenticate(Provider.GOOGLE, invalidCode))
+		assertThatThrownBy(() -> authProvider.authenticate(origin, Provider.GOOGLE, invalidCode))
 			.isInstanceOf(InvalidAuthorizationCodeException.class);
 
 	}
