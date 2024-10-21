@@ -37,78 +37,82 @@ import com.google.common.base.Charsets;
 @ActiveProfiles("test")
 class GlobalExceptionHandlerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-	@MockBean
-	private OAuthProvider authProvider;
+  @MockBean
+  private OAuthProvider authProvider;
 
-	@Autowired
-	private MemberTokenRepository memberTokenRepository;
+  @Autowired
+  private MemberTokenRepository memberTokenRepository;
 
-	@Autowired
-	private MemberRepository memberRepository;
+  @Autowired
+  private MemberRepository memberRepository;
 
-	@BeforeEach
-	void clean() {
-		memberTokenRepository.deleteAllInBatch();
-		memberRepository.deleteAllInBatch();
-	}
+  @BeforeEach
+  void clean() {
+    memberTokenRepository.deleteAllInBatch();
+    memberRepository.deleteAllInBatch();
+  }
 
-	@Test
-	@DisplayName("MemberRegisterException 발생 시 재시도하여 정상 로그인 처리한다")
-	void handleMemberRegisterException() throws InterruptedException {
-		// given
-		Provider provider = Provider.GOOGLE;
-		String authorizationCode = "test authorization code";
-		String authId = "123456789";
+  @Test
+  @DisplayName("MemberRegisterException 발생 시 재시도하여 정상 로그인 처리한다")
+  void handleMemberRegisterException() throws InterruptedException {
+    // given
+    String origin = "http://localhost:5173";
+    Provider provider = Provider.GOOGLE;
+    String authorizationCode = "test authorization code";
+    String authId = "123456789";
 
-		doReturn(authId).when(authProvider).authenticate(provider, authorizationCode);
+    doReturn(authId).when(authProvider).authenticate(origin, provider, authorizationCode);
 
-		// when
-		int threadCount = 5;
-		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-		CountDownLatch latch = new CountDownLatch(threadCount);
+    // when
+    int threadCount = 5;
+    ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+    CountDownLatch latch = new CountDownLatch(threadCount);
 
-		AtomicInteger firstTimeTrueCount = new AtomicInteger(0);
-		AtomicInteger firstTimeFalseCount = new AtomicInteger(0);
+    AtomicInteger firstTimeTrueCount = new AtomicInteger(0);
+    AtomicInteger firstTimeFalseCount = new AtomicInteger(0);
 
-		for (int i = 0; i < threadCount; i++) {
-			executorService.submit(() -> {
-				try {
-					ResultActions resultActions = mockMvc.perform(post("/oauth/google")
-							.param("authorizationCode", authorizationCode))
-						.andExpect(status().isCreated());
+    for (int i = 0; i < threadCount; i++) {
+      executorService.submit(() -> {
+        try {
+          ResultActions resultActions = mockMvc.perform(post("/oauth/google")
+                  .param("authorizationCode", authorizationCode)
+                  .header("Origin", origin))
+              .andExpect(status().isCreated());
 
-					String response = resultActions.andReturn().getResponse().getContentAsString(Charsets.UTF_8);
-					JsonNode rootNode = objectMapper.readTree(response);
-					LoginData loginData = objectMapper.treeToValue(rootNode.get("data"), LoginData.class);
+          String response = resultActions.andReturn().getResponse()
+              .getContentAsString(Charsets.UTF_8);
 
-					if (loginData.isFirstTime()) {
-						firstTimeTrueCount.incrementAndGet();
-					} else {
-						firstTimeFalseCount.incrementAndGet();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					latch.countDown();
-				}
-			});
-		}
+          JsonNode rootNode = objectMapper.readTree(response);
+          LoginData loginData = objectMapper.treeToValue(rootNode.get("data"), LoginData.class);
 
-		latch.await();
-		executorService.shutdown();
+          if (loginData.isFirstTime()) {
+            firstTimeTrueCount.incrementAndGet();
+          } else {
+            firstTimeFalseCount.incrementAndGet();
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
 
-		List<Member> members = memberRepository.findAll();
+    latch.await();
+    executorService.shutdown();
 
-		// then
-		assertThat(members).hasSize(1);
-		assertThat(firstTimeTrueCount.get()).isEqualTo(1);
-		assertThat(firstTimeFalseCount.get()).isEqualTo(threadCount - 1);
-	}
+    List<Member> members = memberRepository.findAll();
+
+    // then
+    assertThat(members).hasSize(1);
+    assertThat(firstTimeTrueCount.get()).isEqualTo(1);
+    assertThat(firstTimeFalseCount.get()).isEqualTo(threadCount - 1);
+  }
 
 }
