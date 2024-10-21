@@ -18,28 +18,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final OAuthProvider authProvider;
-	private final MemberService memberService;
-	private final TokenManager tokenManager;
+  private final OAuthProvider authProvider;
+  private final MemberService memberService;
+  private final TokenManager tokenManager;
 
-	public LoginData login(Provider provider, String authorizationCode) {
-		String authId = authProvider.authenticate(provider, authorizationCode);
+  public LoginData login(
+      String origin,
+      Provider provider,
+      String authorizationCode
+  ) {
+    String authId = authProvider.authenticate(
+        origin,
+        provider,
+        authorizationCode
+    );
 
-		return generateLoginData(provider, authId);
-	}
+    return generateLoginData(provider, authId);
+  }
 
-	public LoginData generateLoginData(Provider provider, String authId) {
-		return memberService.findBy(provider, authId)
-			.map(member -> LoginData.from(member, tokenManager.issue(member.getId()), false))
-			.orElseGet(() -> {
-				Member member = memberService.register(provider, authId);
-				return LoginData.from(member, tokenManager.issue(member.getId()), true);
-			});
-	}
+  public LoginData generateLoginData(Provider provider, String authId) {
+    return memberService.findBy(provider, authId)
+        .map(member -> LoginData.from(member, tokenManager.issue(member.getId()), false))
+        .orElseGet(() -> {
+          Member member = memberService.register(provider, authId);
+          return LoginData.from(member, tokenManager.issue(member.getId()), true);
+        });
+  }
 
-	public TokenPair refresh(String refreshTokenInput) {
-		Long memberId = tokenManager.parse(refreshTokenInput, REFRESH);
-		return tokenManager.refresh(memberId, refreshTokenInput);
-	}
+  public TokenPair refresh(String refreshTokenInput) {
+    Long memberId = tokenManager.parse(refreshTokenInput, REFRESH);
+    return tokenManager.refresh(memberId, refreshTokenInput);
+  }
 
 }
