@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class TeamController {
 
   private final TeamService teamService;
-  private final SearchService searchService;
 
   @PostMapping("/teams")
   public ResponseEntity<ApiResponse<NewTeam>> create(
