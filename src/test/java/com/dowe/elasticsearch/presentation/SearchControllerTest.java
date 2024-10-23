@@ -1,4 +1,6 @@
 package com.dowe.elasticsearch.presentation;
 
-public class SearchControllerTest {
+import com.dowe.RestDocsSupport;
+
+public class SearchControllerTest extends RestDocsSupport {
 }
