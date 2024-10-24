@@ -1,5 +1,7 @@
 package com.dowe.elasticsearch.presentation;
 
+import static com.dowe.util.api.ResponseResult.*;
+
 import com.dowe.elasticsearch.application.SearchService;
 import com.dowe.elasticsearch.dto.response.SearchTeamsByTitleResponse;
 import com.dowe.util.api.ApiResponse;
@@ -30,7 +32,7 @@ public class SearchController {
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.ok(
-            ResponseResult.TEAM_FIND_SUCCESS,
+            TEAM_SEARCH_SUCCESS,
             searchService.searchTeamsByTitle(
                 title,
                 requestSize,
