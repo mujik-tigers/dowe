@@ -1,6 +1,8 @@
 package com.dowe.elasticsearch.presentation;
 
+import static com.dowe.util.AppConstants.API_HOST;
 import static com.dowe.util.AppConstants.BEARER;
+import static com.dowe.util.AppConstants.FRONTEND_ORIGIN;
 import static com.dowe.util.AppConstants.TEAM_MAX_SIZE;
 import static com.dowe.util.api.ResponseResult.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -29,7 +31,7 @@ public class SearchControllerTest extends RestDocsSupport {
 
   @Test
   @DisplayName("팀 제목으로 검색 (최초 시도)")
-  void searchTeamsByTitleWithMoreResults() throws Exception {
+  void searchTeamsByTitleInitialAttempt() throws Exception {
 
     // given
     String authorizationHeader = BEARER + "accessToken";
@@ -63,7 +65,9 @@ public class SearchControllerTest extends RestDocsSupport {
     mockMvc.perform(get("/search/teams")
             .param("title", searchTitle)
             .param("size", String.valueOf(requestSize))
-            .header(AUTHORIZATION, authorizationHeader))
+            .header(AUTHORIZATION, authorizationHeader)
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
@@ -74,7 +78,7 @@ public class SearchControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data.lastTieBreakerId").value(3L))
         .andExpect(jsonPath("$.data.teamDocumentOutlines.length()").value(3))
         .andDo(document(
-            "team-search-first-attempt",
+            "search-teams-by-title-initial-attempt",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             queryParameters(
