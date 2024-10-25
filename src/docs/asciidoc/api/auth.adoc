@@ -8,6 +8,8 @@
 
 include::{snippets}/signup-success/http-request.adoc[]
 
+===== Path Parameter
+
 include::{snippets}/signup-success/path-parameters.adoc[]
 
 ==== HTTP Response
