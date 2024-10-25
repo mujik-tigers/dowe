@@ -1,6 +1,8 @@
 package com.dowe.auth.presentation;
 
+import static com.dowe.util.AppConstants.*;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -41,27 +43,25 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("회원가입 성공")
   void signUpSuccess() throws Exception {
     // given
-    String origin = "http://localhost:8080";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
     LoginData data = LoginData.builder()
         .code("GDE1C")
         .name("몽블랑130")
-        .accessToken(
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
-        .refreshToken(
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
+        .accessToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
+        .refreshToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
         .firstTime(true)
         .build();
 
-    given(authService.login(origin, provider, authorizationCode))
+    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
         .willReturn(data);
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header("Origin", origin))
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
@@ -98,7 +98,6 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 성공")
   void loginSuccess() throws Exception {
     // given
-    String origin = "http://localhost:8080";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
@@ -112,13 +111,14 @@ class AuthControllerTest extends RestDocsSupport {
         .firstTime(false)
         .build();
 
-    given(authService.login(origin, provider, authorizationCode))
+    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
         .willReturn(data);
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header("Origin", origin))
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
@@ -155,13 +155,13 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 실패 : 지원하지 않는 OAuth Provider")
   void invalidProvider() throws Exception {
     // given
-    String origin = "http://localhost:8080";
     String authorizationCode = "auth-code";
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", "goooogle")
             .param("authorizationCode", authorizationCode)
-            .header("Origin", origin))
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
@@ -191,17 +191,17 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 실패 : 유효하지 않은 인증 코드")
   void invalidAuthorizationCode() throws Exception {
     // given
-    String origin = "http://localhost:8080";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
-    given(authService.login(origin, provider, authorizationCode))
+    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
         .willThrow(new InvalidAuthorizationCodeException());
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header("Origin", origin))
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
@@ -233,7 +233,9 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("토큰 리프레싱 실패 : 유효하지 않은 인증 헤더")
   void refreshFail_invalidAuthorizationHeader() throws Exception {
     // when / then
-    mockMvc.perform(patch("/refresh"))
+    mockMvc.perform(patch("/refresh")
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -274,7 +276,9 @@ class AuthControllerTest extends RestDocsSupport {
 
     // when // then
     mockMvc.perform(patch("/refresh")
-            .header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
+            .header(AUTHORIZATION, BEARER + refreshToken)
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
@@ -287,7 +291,7 @@ class AuthControllerTest extends RestDocsSupport {
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             requestHeaders(
-                headerWithName(HttpHeaders.AUTHORIZATION).description("refresh token")
+                headerWithName(AUTHORIZATION).description("refresh token")
             ),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
@@ -316,7 +320,9 @@ class AuthControllerTest extends RestDocsSupport {
 
     // when // then
     mockMvc.perform(patch("/refresh")
-            .header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + accessToken))
+            .header(AUTHORIZATION, BEARER + accessToken)
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -331,7 +337,7 @@ class AuthControllerTest extends RestDocsSupport {
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             requestHeaders(
-                headerWithName(HttpHeaders.AUTHORIZATION).description("access token")
+                headerWithName(AUTHORIZATION).description("access token")
             ),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
@@ -359,7 +365,9 @@ class AuthControllerTest extends RestDocsSupport {
 
     // when // then
     mockMvc.perform(patch("/refresh")
-            .header(HttpHeaders.AUTHORIZATION, AppConstants.BEARER + refreshToken))
+            .header(AUTHORIZATION, BEARER + refreshToken)
+            .header(ORIGIN, FRONTEND_ORIGIN)
+            .header(HOST, API_HOST))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -374,7 +382,7 @@ class AuthControllerTest extends RestDocsSupport {
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             requestHeaders(
-                headerWithName(HttpHeaders.AUTHORIZATION).description("refresh token")
+                headerWithName(AUTHORIZATION).description("refresh token")
             ),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),

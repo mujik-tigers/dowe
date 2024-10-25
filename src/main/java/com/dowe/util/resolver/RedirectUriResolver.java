@@ -4,7 +4,6 @@ import static com.dowe.util.AppConstants.*;
 
 import com.dowe.config.properties.OAuthProperties;
 import com.dowe.member.Provider;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ public class RedirectUriResolver {
     if (origin != null && oAuthProperties.getAllowedOrigins().contains(origin)) {
       return origin + baseUri;
     }
-    return DOMAIN + baseUri;
+    return FRONTEND_ORIGIN + baseUri;
   }
 
 }

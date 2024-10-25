@@ -14,6 +14,9 @@ include::{snippets}/team-create-success/http-request.adoc[]
 ==== HTTP Response
 
 include::{snippets}/team-create-success/http-response.adoc[]
+
+==== Response Fields
+
 include::{snippets}/team-create-success/response-fields.adoc[]
 
 {nbsp}

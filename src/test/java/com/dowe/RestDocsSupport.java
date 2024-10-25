@@ -1,6 +1,7 @@
 package com.dowe;
 
 import com.dowe.elasticsearch.application.SearchService;
+import com.dowe.elasticsearch.presentation.SearchController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,38 +21,39 @@ import com.dowe.util.interceptor.AuthorizationHeaderInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = {
-	AuthController.class,
-	MemberController.class,
-	TeamController.class
+    AuthController.class,
+    MemberController.class,
+    TeamController.class,
+    SearchController.class
 })
 @AutoConfigureRestDocs
 public abstract class RestDocsSupport {
 
-	@Autowired
-	protected MockMvc mockMvc;
+  @Autowired
+  protected MockMvc mockMvc;
 
-	@Autowired
-	protected ObjectMapper objectMapper;
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-	@SpyBean
-	protected AccessTokenInterceptor accessTokenInterceptor;
+  @SpyBean
+  protected AccessTokenInterceptor accessTokenInterceptor;
 
-	@SpyBean
-	protected AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
+  @SpyBean
+  protected AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
 
-	@MockBean
-	protected AuthService authService;
+  @MockBean
+  protected AuthService authService;
 
-	@MockBean
-	protected TokenManager tokenManager;
+  @MockBean
+  protected TokenManager tokenManager;
 
-	@MockBean
-	protected MemberService memberService;
+  @MockBean
+  protected MemberService memberService;
 
-	@MockBean
-	protected TeamService teamService;
+  @MockBean
+  protected TeamService teamService;
 
-	@MockBean
-	protected SearchService searchService;
+  @MockBean
+  protected SearchService searchService;
 
 }

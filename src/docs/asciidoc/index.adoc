@@ -10,9 +10,11 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 :docinfo: shared
+:table-caption!:
 
 include::api/auth.adoc[]
 include::api/member.adoc[]
 include::api/team.adoc[]
+include::api/search.adoc[]
 
 {nbsp}
