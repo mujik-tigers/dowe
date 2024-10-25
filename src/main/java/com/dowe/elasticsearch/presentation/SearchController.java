@@ -1,9 +1,12 @@
 package com.dowe.elasticsearch.presentation;
 
+import static com.dowe.util.api.ResponseResult.*;
+
 import com.dowe.elasticsearch.application.SearchService;
 import com.dowe.elasticsearch.dto.response.SearchTeamsByTitleResponse;
 import com.dowe.util.api.ApiResponse;
 import com.dowe.util.api.ResponseResult;
+import com.dowe.util.resolver.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ public class SearchController {
 
   @GetMapping("/teams")
   public ResponseEntity<ApiResponse<SearchTeamsByTitleResponse>> searchTeamsByTitle(
+      @Login Long memberId,
       @RequestParam(required = true) String title,
       @RequestParam(defaultValue = "0") Long lastUnixTimestamp,
       @RequestParam(defaultValue = "0") Long lastTieBreakerId,
@@ -28,7 +32,7 @@ public class SearchController {
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.ok(
-            ResponseResult.TEAM_FIND_SUCCESS,
+            TEAM_SEARCH_SUCCESS,
             searchService.searchTeamsByTitle(
                 title,
                 requestSize,
