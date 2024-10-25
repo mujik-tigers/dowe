@@ -41,17 +41,15 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("회원가입 성공")
   void signUpSuccess() throws Exception {
     // given
-    String origin = "http://localhost:8080";
+    String origin = "https://dowith.today";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
     LoginData data = LoginData.builder()
         .code("GDE1C")
         .name("몽블랑130")
-        .accessToken(
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
-        .refreshToken(
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
+        .accessToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4Nzk5NiwibWVtYmVySWQiOjF9.20VhnUqeJASQuoeCCpi8Mlq6RFqKja98rXWJxlfX3QE")
+        .refreshToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkb3dpdGgiLCJpYXQiOjE3MjAxODc5OTQsImV4cCI6MTcyMDE4OTIwNCwibWVtYmVySWQiOjF9.EBl_ghoXcLZ7o6uQ-OscEolQoFm8deglLeDz1bZ60l8")
         .firstTime(true)
         .build();
 
@@ -98,7 +96,7 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 성공")
   void loginSuccess() throws Exception {
     // given
-    String origin = "http://localhost:8080";
+    String origin = "https://dowith.today";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
@@ -155,7 +153,7 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 실패 : 지원하지 않는 OAuth Provider")
   void invalidProvider() throws Exception {
     // given
-    String origin = "http://localhost:8080";
+    String origin = "https://dowith.today";
     String authorizationCode = "auth-code";
 
     // when // then
@@ -191,7 +189,7 @@ class AuthControllerTest extends RestDocsSupport {
   @DisplayName("로그인 실패 : 유효하지 않은 인증 코드")
   void invalidAuthorizationCode() throws Exception {
     // given
-    String origin = "http://localhost:8080";
+    String origin = "https://dowith.today";
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
