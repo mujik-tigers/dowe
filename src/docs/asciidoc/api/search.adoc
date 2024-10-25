@@ -1,17 +1,23 @@
 [[Search-API]]
 == Search API
 
-[[team-search-with-no-more-results]]
-=== 팀 제목으로 검색 시 추가 결과가 없는 경우
+[[team-search-first-attempt]]
+=== 팀 제목으로 검색 (최초 시도)
 
-=== HTTP Request
+==== HTTP Request
 
-include::{snippets}/team-search-with-no-more-results/http-request.adoc[]
-include::{snippets}/team-search-with-no-more-results/query-parameters.adoc[]
+include::{snippets}/team-search-first-attempt/http-request.adoc[]
 
-=== HTTP Response
+==== Query Parameter
 
-include::{snippets}/team-search-with-no-more-results/http-response.adoc[]
-include::{snippets}/team-search-with-no-more-results/response-fields.adoc[]
+include::{snippets}/team-search-first-attempt/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/team-search-first-attempt/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/team-search-first-attempt/response-fields.adoc[]
 
 {nbsp}
