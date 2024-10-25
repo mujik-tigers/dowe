@@ -15,7 +15,6 @@ public final class AppConstants {
 	public static final String TEAM_TITLE = "title";
 	public static final String UPDATED_AT = "updated_at";
 	public static final String TIE_BREAKER_ID = "tie_breaker_id";
-	public static final String ORIGIN = "Origin";
 	public static final String DOMAIN = "https://dowith.today";
 
 	public static final int TEAM_MAX_SIZE = 10;
