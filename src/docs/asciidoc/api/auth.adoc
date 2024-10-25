@@ -7,11 +7,15 @@
 ==== HTTP Request
 
 include::{snippets}/signup-success/http-request.adoc[]
+
 include::{snippets}/signup-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
 include::{snippets}/signup-success/http-response.adoc[]
+
+==== Response Fields
+
 include::{snippets}/signup-success/response-fields.adoc[]
 
 {nbsp}
@@ -22,11 +26,15 @@ include::{snippets}/signup-success/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/login-success/http-request.adoc[]
+
 include::{snippets}/login-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
 include::{snippets}/login-success/http-response.adoc[]
+
+==== Response Fields
+
 include::{snippets}/login-success/response-fields.adoc[]
 
 {nbsp}
@@ -54,7 +62,7 @@ include::{snippets}/login-fail-invalid-provider/response-fields.adoc[]
 include::{snippets}/login-fail-invalid-authorization-code/http-request.adoc[]
 include::{snippets}/login-fail-invalid-authorization-code/path-parameters.adoc[]
 
-==== HTTP Response
+|==== HTTP Response
 
 include::{snippets}/login-fail-invalid-authorization-code/http-response.adoc[]
 include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
@@ -116,7 +124,7 @@ include::{snippets}/token-refresh-success/response-fields.adoc[]
 include::{snippets}/token-refresh-fail-hand-over-access-token/http-request.adoc[]
 include::{snippets}/token-refresh-fail-hand-over-access-token/request-headers.adoc[]
 
-==== HTTP Response
+|==== HTTP Response
 
 include::{snippets}/token-refresh-fail-hand-over-access-token/http-response.adoc[]
 include::{snippets}/token-refresh-fail-hand-over-access-token/response-fields.adoc[]
