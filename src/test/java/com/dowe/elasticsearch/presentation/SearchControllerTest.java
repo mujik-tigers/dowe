@@ -14,6 +14,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.snippet.Attributes.key;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,7 @@ import com.dowe.team.dto.TeamDocumentOutline;
 public class SearchControllerTest extends RestDocsSupport {
 
   @Test
-  @DisplayName("팀 제목으로 검색 시 추가 결과가 없는 경우")
+  @DisplayName("팀 제목으로 검색 (최초 시도)")
   void searchTeamsByTitleWithMoreResults() throws Exception {
 
     // given
@@ -42,7 +43,7 @@ public class SearchControllerTest extends RestDocsSupport {
     );
 
     SearchTeamsByTitleResponse response = new SearchTeamsByTitleResponse(
-        false,
+        true,
         1727936701123L,
         3L,
         teamDocumentOutlines
@@ -61,8 +62,6 @@ public class SearchControllerTest extends RestDocsSupport {
     // when / then
     mockMvc.perform(get("/search/teams")
             .param("title", searchTitle)
-            .param("lastUnixTimestamp", "0")
-            .param("lastTieBreakerId", "0")
             .param("size", String.valueOf(requestSize))
             .header(AUTHORIZATION, authorizationHeader))
         .andDo(print())
@@ -70,19 +69,19 @@ public class SearchControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
         .andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
         .andExpect(jsonPath("$.result").value(TEAM_SEARCH_SUCCESS.getDescription()))
-        .andExpect(jsonPath("$.data.hasMore").value(false))
+        .andExpect(jsonPath("$.data.hasMore").value(true))
         .andExpect(jsonPath("$.data.lastUnixTimestamp").value(1727936701123L))
         .andExpect(jsonPath("$.data.lastTieBreakerId").value(3L))
         .andExpect(jsonPath("$.data.teamDocumentOutlines.length()").value(3))
         .andDo(document(
-            "team-search-with-no-more-results",
+            "team-search-first-attempt",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             queryParameters(
                 parameterWithName("title").description("검색 할 팀 제목"),
-                parameterWithName("lastUnixTimestamp").description("마지막 검색 결과의 Unix 타임스탬프").optional(),
-                parameterWithName("lastTieBreakerId").description("마지막 검색 결과의 Tie Breaker ID").optional(),
-                parameterWithName("size").description("요청할 검색 결과의 개수").optional()
+                parameterWithName("lastUnixTimestamp").attributes(key("default").value(0)).description("마지막 검색 결과의 Unix 타임스탬프").optional(),
+                parameterWithName("lastTieBreakerId").attributes(key("default").value(0)).description("마지막 검색 결과의 Tie Breaker ID").optional(),
+                parameterWithName("size").attributes(key("default").value(10)).description("요청할 검색 결과의 개수").optional()
             ),
             responseFields(
                 fieldWithPath("code").type(NUMBER).description("코드"),
