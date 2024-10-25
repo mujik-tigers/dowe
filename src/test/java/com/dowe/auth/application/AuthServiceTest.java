@@ -46,15 +46,14 @@ class AuthServiceTest extends IntegrationTestSupport {
 	@DisplayName("처음 로그인한 경우 firstTime 값은 true이다")
 	void testFirstTime1() {
 		// given
-		String origin = "https://dowith.today";
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
 		String authId = "test auth id";
 
-		doReturn(authId).when(authProvider).authenticate(origin, provider, authorizationCode);
+		doReturn(authId).when(authProvider).authenticate(FRONTEND_ORIGIN, provider, authorizationCode);
 
 		// when
-		LoginData loginData = authService.login(origin, provider, authorizationCode);
+		LoginData loginData = authService.login(FRONTEND_ORIGIN, provider, authorizationCode);
 
 		// then
 		assertThat(loginData.isFirstTime()).isTrue();
@@ -90,12 +89,11 @@ class AuthServiceTest extends IntegrationTestSupport {
 	@DisplayName("이미 등록된 사용자를 또 등록하려고 하는 경우 예외가 발생한다")
 	void testRegister() throws InterruptedException {
 		// given
-		String origin = "https://dowith.today";
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
 		String authId = "123456789";
 
-		doReturn(authId).when(authProvider).authenticate(origin, provider, authorizationCode);
+		doReturn(authId).when(authProvider).authenticate(FRONTEND_ORIGIN, provider, authorizationCode);
 		doReturn(Optional.empty()).when(memberRepository).findByProvider(provider, authId);
 
 		// when
@@ -109,7 +107,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
 				try {
-					authService.login(origin, provider, authorizationCode);
+					authService.login(FRONTEND_ORIGIN, provider, authorizationCode);
 					successCount.incrementAndGet();
 				} catch (MemberRegisterException exception) {
 					failureCount.incrementAndGet();
