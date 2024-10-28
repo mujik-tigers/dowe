@@ -6,19 +6,19 @@
 
 ==== HTTP Request
 
-include::{snippets}/signup-success/http-request.adoc[]
+include::{snippets}/auth-controller-test/sign-up-success/http-request.adoc[]
 
-===== Path Parameter
+===== Path Parameters
 
-include::{snippets}/signup-success/path-parameters.adoc[]
+include::{snippets}/auth-controller-test/sign-up-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/signup-success/http-response.adoc[]
+include::{snippets}/auth-controller-test/sign-up-success/http-response.adoc[]
 
-==== Response Fields
+===== Response Fields
 
-include::{snippets}/signup-success/response-fields.adoc[]
+include::{snippets}/auth-controller-test/sign-up-success/response-fields.adoc[]
 
 {nbsp}
 
@@ -27,17 +27,19 @@ include::{snippets}/signup-success/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/login-success/http-request.adoc[]
+include::{snippets}/auth-controller-test/login-success/http-request.adoc[]
 
-include::{snippets}/login-success/path-parameters.adoc[]
+===== Path Parameters
+
+include::{snippets}/auth-controller-test/login-success/path-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/login-success/http-response.adoc[]
+include::{snippets}/auth-controller-test/login-success/http-response.adoc[]
 
-==== Response Fields
+===== Response Fields
 
-include::{snippets}/login-success/response-fields.adoc[]
+include::{snippets}/auth-controller-test/login-success/response-fields.adoc[]
 
 {nbsp}
 
@@ -46,13 +48,19 @@ include::{snippets}/login-success/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/login-fail-invalid-provider/http-request.adoc[]
-include::{snippets}/login-fail-invalid-provider/path-parameters.adoc[]
+include::{snippets}/auth-controller-test/invalid-provider/http-request.adoc[]
+
+===== Path Parameters
+
+include::{snippets}/auth-controller-test/invalid-provider/path-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/login-fail-invalid-provider/http-response.adoc[]
-include::{snippets}/login-fail-invalid-provider/response-fields.adoc[]
+include::{snippets}/auth-controller-test/invalid-provider/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/invalid-provider/response-fields.adoc[]
 
 {nbsp}
 
@@ -61,13 +69,19 @@ include::{snippets}/login-fail-invalid-provider/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/login-fail-invalid-authorization-code/http-request.adoc[]
-include::{snippets}/login-fail-invalid-authorization-code/path-parameters.adoc[]
+include::{snippets}/auth-controller-test/invalid-authorization-code/http-request.adoc[]
 
-|==== HTTP Response
+===== Path Parameters
 
-include::{snippets}/login-fail-invalid-authorization-code/http-response.adoc[]
-include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
+include::{snippets}/auth-controller-test/invalid-authorization-code/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/auth-controller-test/invalid-authorization-code/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/invalid-authorization-code/response-fields.adoc[]
 
 {nbsp}
 
@@ -78,12 +92,19 @@ include::{snippets}/login-fail-invalid-authorization-code/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/refresh-fail-invalid-authorization-header/http-request.adoc[]
+include::{snippets}/auth-controller-test/refresh-fail_invalid-authorization-header/http-request.adoc[]
+
+===== HTTP Request Headers
+
+include::{snippets}/auth-controller-test/refresh-token-fail-expired-token/request-headers.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/refresh-fail-invalid-authorization-header/http-response.adoc[]
-include::{snippets}/refresh-fail-invalid-authorization-header/response-fields.adoc[]
+include::{snippets}/auth-controller-test/refresh-fail_invalid-authorization-header/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/refresh-fail_invalid-authorization-header/response-fields.adoc[]
 
 {nbsp}
 
@@ -94,12 +115,19 @@ Access Token 만료 시에도 경우도 아래와 동일한 형식의 응답을 
 
 ==== HTTP Request
 
-include::{snippets}/token-refresh-fail-expired-token/http-request.adoc[]
+include::{snippets}/auth-controller-test/refresh-token-fail-expired-token/http-request.adoc[]
+
+===== HTTP Request Headers
+
+include::{snippets}/auth-controller-test/refresh-token-fail-expired-token/request-headers.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/token-refresh-fail-expired-token/http-response.adoc[]
-include::{snippets}/token-refresh-fail-expired-token/response-fields.adoc[]
+include::{snippets}/auth-controller-test/refresh-token-fail-expired-token/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/refresh-token-fail-expired-token/response-fields.adoc[]
 
 {nbsp}
 
@@ -108,27 +136,39 @@ include::{snippets}/token-refresh-fail-expired-token/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/token-refresh-success/http-request.adoc[]
-include::{snippets}/token-refresh-success/request-headers.adoc[]
+include::{snippets}/auth-controller-test/refresh-token/http-request.adoc[]
+
+===== HTTP Request Headers
+
+include::{snippets}/auth-controller-test/refresh-token/request-headers.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/token-refresh-success/http-response.adoc[]
-include::{snippets}/token-refresh-success/response-fields.adoc[]
+include::{snippets}/auth-controller-test/refresh-token/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/refresh-token/response-fields.adoc[]
 
 {nbsp}
 
-[[token-refresh-success]]
+[[refresh-fail-access-token-instead-refresh-token]]
 === 토큰 refresh 실패 : refreshToken이 아닌 accessToken을 전달
 
 ==== HTTP Request
 
-include::{snippets}/token-refresh-fail-hand-over-access-token/http-request.adoc[]
-include::{snippets}/token-refresh-fail-hand-over-access-token/request-headers.adoc[]
+include::{snippets}/auth-controller-test/refresh-token-fail-invalid-token-type/http-request.adoc[]
 
-|==== HTTP Response
+===== HTTP Request Headers
 
-include::{snippets}/token-refresh-fail-hand-over-access-token/http-response.adoc[]
-include::{snippets}/token-refresh-fail-hand-over-access-token/response-fields.adoc[]
+include::{snippets}/auth-controller-test/refresh-token-fail-invalid-token-type/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/auth-controller-test/refresh-token-fail-invalid-token-type/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/auth-controller-test/refresh-token-fail-invalid-token-type/response-fields.adoc[]
 
 {nbsp}
