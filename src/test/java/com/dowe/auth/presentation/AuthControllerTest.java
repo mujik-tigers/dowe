@@ -1,12 +1,14 @@
 package com.dowe.auth.presentation;
 
-import static com.dowe.util.AppConstants.*;
+import static com.dowe.TestConstants.AUTHORIZATION;
+import static com.dowe.TestConstants.BACKEND_DOMAIN;
+import static com.dowe.TestConstants.BEARER;
+import static com.dowe.TestConstants.FRONTEND_DOMAIN;
+import static com.dowe.TestConstants.HOST;
+import static com.dowe.TestConstants.ORIGIN;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -15,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -31,7 +32,6 @@ import com.dowe.exception.auth.InvalidAuthorizationHeaderException;
 import com.dowe.exception.auth.InvalidProviderException;
 import com.dowe.exception.auth.InvalidTokenException;
 import com.dowe.member.Provider;
-import com.dowe.util.AppConstants;
 import com.dowe.util.api.ResponseResult;
 
 class AuthControllerTest extends RestDocsSupport {
@@ -54,14 +54,14 @@ class AuthControllerTest extends RestDocsSupport {
         .firstTime(true)
         .build();
 
-    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
+    given(authService.login(FRONTEND_DOMAIN, provider, authorizationCode))
         .willReturn(data);
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
@@ -72,9 +72,7 @@ class AuthControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data.accessToken").value(data.getAccessToken()))
         .andExpect(jsonPath("$.data.refreshToken").value(data.getRefreshToken()))
         .andExpect(jsonPath("$.data.firstTime").value(data.isFirstTime()))
-        .andDo(document("signup-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("provider").description("OAuth Provider")
             ),
@@ -111,14 +109,14 @@ class AuthControllerTest extends RestDocsSupport {
         .firstTime(false)
         .build();
 
-    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
+    given(authService.login(FRONTEND_DOMAIN, provider, authorizationCode))
         .willReturn(data);
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
@@ -129,9 +127,7 @@ class AuthControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data.accessToken").value(data.getAccessToken()))
         .andExpect(jsonPath("$.data.refreshToken").value(data.getRefreshToken()))
         .andExpect(jsonPath("$.data.firstTime").value(data.isFirstTime()))
-        .andDo(document("login-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("provider").description("OAuth Provider")
             ),
@@ -160,8 +156,8 @@ class AuthControllerTest extends RestDocsSupport {
     // when // then
     mockMvc.perform(post("/oauth/{provider}", "goooogle")
             .param("authorizationCode", authorizationCode)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
@@ -170,9 +166,7 @@ class AuthControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data").isArray())
         .andExpect(jsonPath("$.data[0].type").value(InvalidProviderException.class.getSimpleName()))
         .andExpect(jsonPath("$.data[0].message").value(ErrorType.INVALID_PROVIDER.getMessage()))
-        .andDo(document("login-fail-invalid-provider",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("provider").description("OAuth Provider")
             ),
@@ -194,14 +188,14 @@ class AuthControllerTest extends RestDocsSupport {
     String authorizationCode = "auth-code";
     Provider provider = Provider.GOOGLE;
 
-    given(authService.login(FRONTEND_ORIGIN, provider, authorizationCode))
+    given(authService.login(FRONTEND_DOMAIN, provider, authorizationCode))
         .willThrow(new InvalidAuthorizationCodeException());
 
     // when // then
     mockMvc.perform(post("/oauth/{provider}", provider.name().toLowerCase())
             .param("authorizationCode", authorizationCode)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
@@ -212,9 +206,7 @@ class AuthControllerTest extends RestDocsSupport {
             InvalidAuthorizationCodeException.class.getSimpleName()))
         .andExpect(
             jsonPath("$.data[0].message").value(ErrorType.INVALID_AUTHORIZATION_CODE.getMessage()))
-        .andDo(document("login-fail-invalid-authorization-code",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("provider").description("OAuth Provider")
             ),
@@ -234,8 +226,8 @@ class AuthControllerTest extends RestDocsSupport {
   void refreshFail_invalidAuthorizationHeader() throws Exception {
     // when / then
     mockMvc.perform(patch("/refresh")
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -246,9 +238,7 @@ class AuthControllerTest extends RestDocsSupport {
             InvalidAuthorizationHeaderException.class.getSimpleName()))
         .andExpect(jsonPath("$.data[0].message").value(
             ErrorType.INVALID_AUTHORIZATION_HEADER.getMessage()))
-        .andDo(document("refresh-fail-invalid-authorization-header",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -277,8 +267,8 @@ class AuthControllerTest extends RestDocsSupport {
     // when // then
     mockMvc.perform(patch("/refresh")
             .header(AUTHORIZATION, BEARER + refreshToken)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
@@ -287,9 +277,7 @@ class AuthControllerTest extends RestDocsSupport {
             jsonPath("$.result").value(ResponseResult.TOKEN_REFRESH_SUCCESS.getDescription()))
         .andExpect(jsonPath("$.data.accessToken").value(accessToken))
         .andExpect(jsonPath("$.data.refreshToken").value(newRefreshToken))
-        .andDo(document("token-refresh-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             requestHeaders(
                 headerWithName(AUTHORIZATION).description("refresh token")
             ),
@@ -321,8 +309,8 @@ class AuthControllerTest extends RestDocsSupport {
     // when // then
     mockMvc.perform(patch("/refresh")
             .header(AUTHORIZATION, BEARER + accessToken)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -333,9 +321,7 @@ class AuthControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data[0].message").value(ErrorType.INVALID_TOKEN.getMessage()))
         .andExpect(jsonPath("$.data[0].currentTokenType").value(TokenType.ACCESS.getDescription()))
         .andExpect(jsonPath("$.data[0].needTokenType").value(TokenType.REFRESH.getDescription()))
-        .andDo(document("token-refresh-fail-hand-over-access-token",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             requestHeaders(
                 headerWithName(AUTHORIZATION).description("access token")
             ),
@@ -366,8 +352,8 @@ class AuthControllerTest extends RestDocsSupport {
     // when // then
     mockMvc.perform(patch("/refresh")
             .header(AUTHORIZATION, BEARER + refreshToken)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.code").value(HttpStatus.UNAUTHORIZED.value()))
@@ -378,9 +364,7 @@ class AuthControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data[0].message").value(ErrorType.EXPIRED_TOKEN.getMessage()))
         .andExpect(jsonPath("$.data[0].currentTokenType").value(TokenType.REFRESH.getDescription()))
         .andExpect(jsonPath("$.data[0].needTokenType").value(TokenType.REFRESH.getDescription()))
-        .andDo(document("token-refresh-fail-expired-token",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             requestHeaders(
                 headerWithName(AUTHORIZATION).description("refresh token")
             ),

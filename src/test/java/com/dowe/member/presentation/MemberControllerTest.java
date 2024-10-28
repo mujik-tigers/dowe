@@ -1,12 +1,12 @@
 package com.dowe.member.presentation;
 
-import static com.dowe.util.AppConstants.*;
+import static com.dowe.TestConstants.AUTHORIZATION;
+import static com.dowe.TestConstants.BEARER;
+import static com.dowe.TestConstants.TEAM_MAX_SIZE;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -42,7 +41,7 @@ class MemberControllerTest extends RestDocsSupport {
 
     // when / then
     mockMvc.perform(patch("/members/names")
-            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .header(AUTHORIZATION, authorizationHeader)
             .content(objectMapper.writeValueAsString(memberName))
             .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -52,9 +51,7 @@ class MemberControllerTest extends RestDocsSupport {
         .andExpect(
             jsonPath("$.result").value(ResponseResult.MEMBER_NAME_UPDATE_SUCCESS.getDescription()))
         .andExpect(jsonPath("$.data.newName").value("your new name"))
-        .andDo(document("member-name-update-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -77,7 +74,7 @@ class MemberControllerTest extends RestDocsSupport {
 
     // when / then
     mockMvc.perform(patch("/members/names")
-            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .header(AUTHORIZATION, authorizationHeader)
             .content(objectMapper.writeValueAsString(memberName))
             .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -85,9 +82,7 @@ class MemberControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
         .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
         .andExpect(jsonPath("$.result").value(ResponseResult.EXCEPTION_OCCURRED.getDescription()))
-        .andDo(document("member-name-update-fail",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -121,7 +116,7 @@ class MemberControllerTest extends RestDocsSupport {
 
     // when / then
     mockMvc.perform(get("/members/teams")
-            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+            .header(AUTHORIZATION, authorizationHeader)
             .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
@@ -129,9 +124,7 @@ class MemberControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.status").value(HttpStatus.OK.getReasonPhrase()))
         .andExpect(
             jsonPath("$.result").value(ResponseResult.MY_TEAM_LIST_FETCH_SUCCESS.getDescription()))
-        .andDo(document("my-team-list-fetch-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),

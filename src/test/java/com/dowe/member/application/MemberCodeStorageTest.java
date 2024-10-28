@@ -1,6 +1,6 @@
 package com.dowe.member.application;
 
-import static com.dowe.util.AppConstants.*;
+import static com.dowe.TestConstants.MEMBER_CODE_SET;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Set;
