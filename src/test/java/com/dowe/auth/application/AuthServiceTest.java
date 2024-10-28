@@ -1,6 +1,7 @@
 package com.dowe.auth.application;
 
-import static com.dowe.util.AppConstants.*;
+import static com.dowe.TestConstants.FRONTEND_DOMAIN;
+import static com.dowe.TestConstants.MEMBER_CODE_SET;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -50,10 +51,10 @@ class AuthServiceTest extends IntegrationTestSupport {
 		String authorizationCode = "test authorization code";
 		String authId = "test auth id";
 
-		doReturn(authId).when(authProvider).authenticate(FRONTEND_ORIGIN, provider, authorizationCode);
+		doReturn(authId).when(authProvider).authenticate(FRONTEND_DOMAIN, provider, authorizationCode);
 
 		// when
-		LoginData loginData = authService.login(FRONTEND_ORIGIN, provider, authorizationCode);
+		LoginData loginData = authService.login(FRONTEND_DOMAIN, provider, authorizationCode);
 
 		// then
 		assertThat(loginData.isFirstTime()).isTrue();
@@ -63,12 +64,11 @@ class AuthServiceTest extends IntegrationTestSupport {
 	@DisplayName("다시 로그인한 경우 firstTime 값은 false이다")
 	void testFirstTime2() {
 		// given
-		String origin = "https://dowith.today";
 		Provider provider = Provider.GOOGLE;
 		String authorizationCode = "test authorization code";
 		String authId = "test auth id";
 
-		doReturn(authId).when(authProvider).authenticate(origin, provider, authorizationCode);
+		doReturn(authId).when(authProvider).authenticate(FRONTEND_DOMAIN, provider, authorizationCode);
 
 		Member member = Member.builder()
 			.provider(provider)
@@ -79,7 +79,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 		memberRepository.save(member);
 
 		// when
-		LoginData loginData = authService.login(origin, provider, authorizationCode);
+		LoginData loginData = authService.login(FRONTEND_DOMAIN, provider, authorizationCode);
 
 		// then
 		assertThat(loginData.isFirstTime()).isFalse();
@@ -93,7 +93,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 		String authorizationCode = "test authorization code";
 		String authId = "123456789";
 
-		doReturn(authId).when(authProvider).authenticate(FRONTEND_ORIGIN, provider, authorizationCode);
+		doReturn(authId).when(authProvider).authenticate(FRONTEND_DOMAIN, provider, authorizationCode);
 		doReturn(Optional.empty()).when(memberRepository).findByProvider(provider, authId);
 
 		// when
@@ -107,7 +107,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
 				try {
-					authService.login(FRONTEND_ORIGIN, provider, authorizationCode);
+					authService.login(FRONTEND_DOMAIN, provider, authorizationCode);
 					successCount.incrementAndGet();
 				} catch (MemberRegisterException exception) {
 					failureCount.incrementAndGet();

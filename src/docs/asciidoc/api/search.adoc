@@ -6,37 +6,37 @@
 
 ==== HTTP Request
 
-include::{snippets}/search-teams-by-title-initial-attempt/http-request.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-initial-attempt/http-request.adoc[]
 
-===== Query Parameter
+===== Query Parameters
 
-include::{snippets}/search-teams-by-title-initial-attempt/query-parameters.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-initial-attempt/query-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/search-teams-by-title-initial-attempt/http-response.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-initial-attempt/http-response.adoc[]
 
-==== Response Fields
+===== Response Fields
 
-include::{snippets}/search-teams-by-title-initial-attempt/response-fields.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-initial-attempt/response-fields.adoc[]
 
 [[search-teams-by-title-post-attempt]]
 === 팀 제목으로 검색 (후속 시도)
 
 ==== HTTP Request
 
-include::{snippets}/search-teams-by-title-post-attempt/http-request.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-post-attempt/http-request.adoc[]
 
-===== Query Parameter
+===== Query Parameters
 
-include::{snippets}/search-teams-by-title-post-attempt/query-parameters.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-post-attempt/query-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/search-teams-by-title-post-attempt/http-response.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-post-attempt/http-response.adoc[]
 
-==== Response Fields
+===== Response Fields
 
-include::{snippets}/search-teams-by-title-post-attempt/response-fields.adoc[]
+include::{snippets}/search-controller-test/search-teams-by-title-post-attempt/response-fields.adoc[]
 
 {nbsp}

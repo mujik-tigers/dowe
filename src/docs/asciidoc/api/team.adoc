@@ -9,14 +9,14 @@ title(필수), description(선택), image(선택) +
 
 ==== HTTP Request
 
-include::{snippets}/team-create-success/http-request.adoc[]
+include::{snippets}/team-controller-test/create-success/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/team-create-success/http-response.adoc[]
+include::{snippets}/team-controller-test/create-success/http-response.adoc[]
 
-==== Response Fields
+===== Response Fields
 
-include::{snippets}/team-create-success/response-fields.adoc[]
+include::{snippets}/team-controller-test/create-success/response-fields.adoc[]
 
 {nbsp}
