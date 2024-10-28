@@ -1,12 +1,14 @@
 package com.dowe.team.presentation;
 
-import static com.dowe.util.AppConstants.*;
+import static com.dowe.TestConstants.BEARER;
+import static com.dowe.TestConstants.AUTHORIZATION;
+import static com.dowe.TestConstants.BACKEND_DOMAIN;
+import static com.dowe.TestConstants.FRONTEND_DOMAIN;
+import static com.dowe.TestConstants.HOST;
+import static com.dowe.TestConstants.ORIGIN;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.http.HttpHeaders.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,17 +44,15 @@ class TeamControllerTest extends RestDocsSupport {
             .param("title", "Sample Team")
             .param("description", "This is a sample description.")
             .header(AUTHORIZATION, authorizationHeader)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
         .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.getReasonPhrase()))
         .andExpect(jsonPath("$.result").value(ResponseResult.TEAM_CREATE_SUCCESS.getDescription()))
         .andExpect(jsonPath("$.data.teamId").value(newTeam.getTeamId()))
-        .andDo(document("team-create-success",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),

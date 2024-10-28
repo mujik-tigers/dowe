@@ -23,7 +23,7 @@ public class RedirectUriResolver {
     if (origin != null && oAuthProperties.getAllowedOrigins().contains(origin)) {
       return origin + baseUri;
     }
-    return FRONTEND_ORIGIN + baseUri;
+    return FRONTEND_DOMAIN + baseUri;
   }
 
 }

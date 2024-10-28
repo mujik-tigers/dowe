@@ -1,22 +1,22 @@
 package com.dowe.elasticsearch.presentation;
 
-import static com.dowe.util.AppConstants.API_HOST;
-import static com.dowe.util.AppConstants.BEARER;
-import static com.dowe.util.AppConstants.FRONTEND_ORIGIN;
-import static com.dowe.util.AppConstants.TEAM_MAX_SIZE;
+import static com.dowe.TestConstants.BACKEND_DOMAIN;
+import static com.dowe.TestConstants.BEARER;
+import static com.dowe.TestConstants.AUTHORIZATION;
+import static com.dowe.TestConstants.FRONTEND_DOMAIN;
+import static com.dowe.TestConstants.HOST;
+import static com.dowe.TestConstants.ORIGIN;
+import static com.dowe.TestConstants.TEAM_MAX_SIZE;
+import static com.dowe.config.RestDocsConfig.field;
 import static com.dowe.util.api.ResponseResult.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.http.HttpHeaders.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.restdocs.snippet.Attributes.key;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -35,8 +35,6 @@ public class SearchControllerTest extends RestDocsSupport {
 
     // given
     String authorizationHeader = BEARER + "accessToken";
-    String searchTitle = "sample";
-    int requestSize = 3;
 
     List<TeamDocumentOutline> teamDocumentOutlines = List.of(
         new TeamDocumentOutline(1L, "Sample Team 1", "Description 1", "image1.jpg", 1, TEAM_MAX_SIZE),
@@ -63,11 +61,11 @@ public class SearchControllerTest extends RestDocsSupport {
 
     // when / then
     mockMvc.perform(get("/search/teams")
-            .param("title", searchTitle)
-            .param("size", String.valueOf(requestSize))
+            .param("title", "sample")
+            .param("size", String.valueOf(3))
             .header(AUTHORIZATION, authorizationHeader)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
@@ -77,15 +75,12 @@ public class SearchControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data.lastUnixTimestamp").value(1727936701123L))
         .andExpect(jsonPath("$.data.lastTieBreakerId").value(3L))
         .andExpect(jsonPath("$.data.teamDocumentOutlines.length()").value(3))
-        .andDo(document(
-            "search-teams-by-title-initial-attempt",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             queryParameters(
                 parameterWithName("title").description("검색 할 팀 제목"),
-                parameterWithName("lastUnixTimestamp").attributes(key("default").value(0)).description("마지막 검색 결과의 Unix 타임스탬프").optional(),
-                parameterWithName("lastTieBreakerId").attributes(key("default").value(0)).description("마지막 검색 결과의 Tie Breaker ID").optional(),
-                parameterWithName("size").attributes(key("default").value(10)).description("요청할 검색 결과의 개수").optional()
+                parameterWithName("lastUnixTimestamp").attributes(field("default", "0")).description("마지막 검색 결과의 Unix 타임스탬프").optional(),
+                parameterWithName("lastTieBreakerId").attributes(field("default", "0")).description("마지막 검색 결과의 Tie Breaker ID").optional(),
+                parameterWithName("size").attributes(field("default", "10")).description("요청할 검색 결과의 개수").optional()
             ),
             responseFields(
                 fieldWithPath("code").type(NUMBER).description("코드"),
@@ -144,8 +139,8 @@ public class SearchControllerTest extends RestDocsSupport {
             .param("lastUnixTimestamp", String.valueOf(lastUnixTimestamp))
             .param("lastTieBreakerId", String.valueOf(lastTieBreakerId))
             .header(AUTHORIZATION, authorizationHeader)
-            .header(ORIGIN, FRONTEND_ORIGIN)
-            .header(HOST, API_HOST))
+            .header(ORIGIN, FRONTEND_DOMAIN)
+            .header(HOST, BACKEND_DOMAIN))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
@@ -155,15 +150,12 @@ public class SearchControllerTest extends RestDocsSupport {
         .andExpect(jsonPath("$.data.lastUnixTimestamp").value(1727872200462L))
         .andExpect(jsonPath("$.data.lastTieBreakerId").value(6L))
         .andExpect(jsonPath("$.data.teamDocumentOutlines.length()").value(3))
-        .andDo(document(
-            "search-teams-by-title-post-attempt",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()),
+        .andDo(restDocs.document(
             queryParameters(
                 parameterWithName("title").description("검색 할 팀 제목"),
-                parameterWithName("lastUnixTimestamp").attributes(key("default").value("-")).description("마지막 검색 결과의 Unix 타임스탬프"),
-                parameterWithName("lastTieBreakerId").attributes(key("default").value("-")).description("마지막 검색 결과의 Tie Breaker ID"),
-                parameterWithName("size").attributes(key("default").value(10)).description("요청할 검색 결과의 개수").optional()
+                parameterWithName("lastUnixTimestamp").attributes(field("default", "-")).description("마지막 검색 결과의 Unix 타임스탬프"),
+                parameterWithName("lastTieBreakerId").attributes(field("default", "-")).description("마지막 검색 결과의 Tie Breaker ID"),
+                parameterWithName("size").attributes(field("default", "10")).description("요청할 검색 결과의 개수").optional()
             ),
             responseFields(
                 fieldWithPath("code").type(NUMBER).description("코드"),

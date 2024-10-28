@@ -8,12 +8,15 @@
 
 ==== HTTP Request
 
-include::{snippets}/member-name-update-success/http-request.adoc[]
+include::{snippets}/member-controller-test/update-name-success/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/member-name-update-success/http-response.adoc[]
-include::{snippets}/member-name-update-success/response-fields.adoc[]
+include::{snippets}/member-controller-test/update-name-success/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/member-controller-test/update-name-success/response-fields.adoc[]
 
 {nbsp}
 
@@ -24,12 +27,15 @@ include::{snippets}/member-name-update-success/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/member-name-update-fail/http-request.adoc[]
+include::{snippets}/member-controller-test/update-name-fail/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/member-name-update-fail/http-response.adoc[]
-include::{snippets}/member-name-update-fail/response-fields.adoc[]
+include::{snippets}/member-controller-test/update-name-fail/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/member-controller-test/update-name-fail/response-fields.adoc[]
 
 {nbsp}
 
@@ -38,11 +44,14 @@ include::{snippets}/member-name-update-fail/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/my-team-list-fetch-success/http-request.adoc[]
+include::{snippets}/member-controller-test/fetch-my-team/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/my-team-list-fetch-success/http-response.adoc[]
-include::{snippets}/my-team-list-fetch-success/response-fields.adoc[]
+include::{snippets}/member-controller-test/fetch-my-team/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/member-controller-test/fetch-my-team/response-fields.adoc[]
 
 {nbsp}

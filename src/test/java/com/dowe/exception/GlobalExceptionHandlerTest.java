@@ -1,5 +1,7 @@
 package com.dowe.exception;
 
+import static com.dowe.TestConstants.FRONTEND_DOMAIN;
+import static com.dowe.TestConstants.ORIGIN;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,12 +64,11 @@ class GlobalExceptionHandlerTest {
   @DisplayName("MemberRegisterException 발생 시 재시도하여 정상 로그인 처리한다")
   void handleMemberRegisterException() throws InterruptedException {
     // given
-    String origin = "http://localhost:5173";
     Provider provider = Provider.GOOGLE;
     String authorizationCode = "test authorization code";
     String authId = "123456789";
 
-    doReturn(authId).when(authProvider).authenticate(origin, provider, authorizationCode);
+    doReturn(authId).when(authProvider).authenticate(FRONTEND_DOMAIN, provider, authorizationCode);
 
     // when
     int threadCount = 5;
@@ -82,7 +83,7 @@ class GlobalExceptionHandlerTest {
         try {
           ResultActions resultActions = mockMvc.perform(post("/oauth/google")
                   .param("authorizationCode", authorizationCode)
-                  .header("Origin", origin))
+                  .header(ORIGIN, FRONTEND_DOMAIN))
               .andExpect(status().isCreated());
 
           String response = resultActions.andReturn().getResponse()
