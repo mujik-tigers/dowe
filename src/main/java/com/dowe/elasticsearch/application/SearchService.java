@@ -1,8 +1,6 @@
 package com.dowe.elasticsearch.application;
 
 import static com.dowe.util.AppConstants.HAS_MORE_LAST_HIT_OFFSET;
-import static com.dowe.util.AppConstants.LAST_TIE_BREAKER_ID_INDEX;
-import static com.dowe.util.AppConstants.LAST_UNIX_TIMESTAMP_INDEX;
 import static com.dowe.util.AppConstants.NO_MORE_LAST_HIT_OFFSET;
 
 import com.dowe.elasticsearch.document.TeamDocument;
@@ -41,6 +39,10 @@ public class SearchService {
 
     List<SearchHit<TeamDocument>> teamHits = teamSearchResult.getSearchHits();
 
+    if (teamHits.isEmpty()) {
+      return SearchTeamsByTitleResponse.empty();
+    }
+
     boolean hasMore = teamHits.size() > requestSize;
 
     List<Object> lastSortValues = getLastSortValues(
@@ -53,10 +55,9 @@ public class SearchService {
         teamHits
     );
 
-    return new SearchTeamsByTitleResponse(
+    return SearchTeamsByTitleResponse.of(
         hasMore,
-        getLastUnixTimestamp(lastSortValues),
-        getLastTieBreakerId(lastSortValues),
+        lastSortValues,
         teamDocumentOutlines
     );
   }
@@ -82,18 +83,6 @@ public class SearchService {
         )
         .limit(requestSize)
         .toList();
-  }
-
-  private Long getLastUnixTimestamp(
-      List<Object> lastSortValues
-  ) {
-    return (Long) lastSortValues.get(LAST_UNIX_TIMESTAMP_INDEX);
-  }
-
-  private Long getLastTieBreakerId(
-      List<Object> lastSortValues
-  ) {
-    return (Long) lastSortValues.get(LAST_TIE_BREAKER_ID_INDEX);
   }
 
 }
