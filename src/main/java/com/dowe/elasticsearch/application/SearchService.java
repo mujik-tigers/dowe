@@ -1,8 +1,6 @@
 package com.dowe.elasticsearch.application;
 
 import static com.dowe.util.AppConstants.HAS_MORE_LAST_HIT_OFFSET;
-import static com.dowe.util.AppConstants.LAST_TIE_BREAKER_ID_INDEX;
-import static com.dowe.util.AppConstants.LAST_UNIX_TIMESTAMP_INDEX;
 import static com.dowe.util.AppConstants.NO_MORE_LAST_HIT_OFFSET;
 
 import com.dowe.elasticsearch.document.TeamDocument;
