@@ -84,16 +84,4 @@ public class SearchService {
         .toList();
   }
 
-  private Long getLastUnixTimestamp(
-      List<Object> lastSortValues
-  ) {
-    return (Long) lastSortValues.get(LAST_UNIX_TIMESTAMP_INDEX);
-  }
-
-  private Long getLastTieBreakerId(
-      List<Object> lastSortValues
-  ) {
-    return (Long) lastSortValues.get(LAST_TIE_BREAKER_ID_INDEX);
-  }
-
 }
