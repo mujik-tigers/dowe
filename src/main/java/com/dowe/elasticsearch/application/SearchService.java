@@ -39,6 +39,10 @@ public class SearchService {
 
     List<SearchHit<TeamDocument>> teamHits = teamSearchResult.getSearchHits();
 
+    if (teamHits.isEmpty()) {
+      return SearchTeamsByTitleResponse.empty();
+    }
+
     boolean hasMore = teamHits.size() > requestSize;
 
     List<Object> lastSortValues = getLastSortValues(
