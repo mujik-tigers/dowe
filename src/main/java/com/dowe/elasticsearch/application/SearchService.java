@@ -55,10 +55,9 @@ public class SearchService {
         teamHits
     );
 
-    return new SearchTeamsByTitleResponse(
+    return SearchTeamsByTitleResponse.of(
         hasMore,
-        getLastUnixTimestamp(lastSortValues),
-        getLastTieBreakerId(lastSortValues),
+        lastSortValues,
         teamDocumentOutlines
     );
   }
