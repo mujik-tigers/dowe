@@ -19,6 +19,9 @@ public enum ResponseResult {
   // Team
   TEAM_CREATE_SUCCESS("팀 생성에 성공했습니다"),
 
+  // Random
+  RANDOM_TEAMS_SUCCESS("랜덤 팀 조회에 성공했습니다."),
+
   // Search
   TEAM_SEARCH_SUCCESS("팀 검색에 성공했습니다.");
 
