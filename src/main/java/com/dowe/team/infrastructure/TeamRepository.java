@@ -18,4 +18,12 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
       "WHERE p.team.id = :teamId")
   int countMembersByTeamId(Long teamId);
 
+  @Query(value = "SELECT * FROM team t " +
+      "WHERE t.id NOT IN (" +
+      "   SELECT p.team_id FROM profile p " +
+      "   WHERE p.member_id = :memberId" +
+      ") " +
+      "LIMIT 20 OFFSET :offset", nativeQuery = true)
+  List<Team> findTeamsNotJoinedByMemberWithOffset(Long memberId, int offset);
+
 }
