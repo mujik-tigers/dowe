@@ -102,6 +102,7 @@ class MemberControllerTest extends RestDocsSupport {
 
     TeamOutline teamOutline = new TeamOutline(11L,
         "매일 런닝 크루",
+        "매일 매일 달려봅시다!",
         "https://source/image.jpg",
         3,
         TEAM_MAX_SIZE
@@ -136,6 +137,8 @@ class MemberControllerTest extends RestDocsSupport {
                     .description("아이디"),
                 fieldWithPath("data.teamOutlines[].title").type(JsonFieldType.STRING)
                     .description("이름"),
+                fieldWithPath("data.teamOutlines[].description").type(JsonFieldType.STRING)
+                    .description("설명"),
                 fieldWithPath("data.teamOutlines[].image").type(JsonFieldType.STRING)
                     .description("프로필 이미지 URL"),
                 fieldWithPath("data.teamOutlines[].currentPeople").type(JsonFieldType.NUMBER)
