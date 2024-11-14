@@ -1,6 +1,7 @@
 package com.dowe.team.presentation;
 
 import com.dowe.elasticsearch.application.SearchService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +18,7 @@ import com.dowe.util.resolver.Login;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class TeamController {
@@ -28,6 +30,7 @@ public class TeamController {
       @Login Long memberId,
       @ModelAttribute @Valid TeamSettings teamSettings
   ) {
+    log.info(">>> TeamController create()");
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.created(
                 ResponseResult.TEAM_CREATE_SUCCESS,
