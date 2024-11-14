@@ -1,5 +1,6 @@
 package com.dowe.team.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import com.dowe.util.StringUtil;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeamService {
@@ -30,6 +32,9 @@ public class TeamService {
 
   @Transactional
   public NewTeam create(Long memberId, TeamSettings teamSettings) {
+
+    log.info(">>> TeamService create()");
+
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
 
@@ -38,12 +43,22 @@ public class TeamService {
       image = s3Uploader.upload(TEAM_IMAGE_DIRECTORY, teamSettings.getImage());
     }
 
+    log.info(">>> image: {}", image);
+
     Team teamBuilder = Team.builder()
         .title(StringUtil.removeExtraSpaces(teamSettings.getTitle()))
         .description(StringUtil.removeExtraSpaces(teamSettings.getDescription()))
         .image(image)
         .manager(member)
         .build();
+
+    log.info(">>> teamBuilder");
+    log.info(">>> teamBuilder.getId(): {}", teamBuilder.getId());
+    log.info(">>> teamBuilder.getTitle(): {}", teamBuilder.getTitle());
+    log.info(">>> teamBuilder.getDescription(): {}", teamBuilder.getDescription());
+    log.info(">>> teamBuilder.getImage(): {}", teamBuilder.getImage());
+    log.info(">>> teamBuilder.getManager(): {}", teamBuilder.getManager());
+    log.info(">>> teamBuilder.getProfiles(): {}", teamBuilder.getProfiles());
 
     Team team = teamRepository.save(teamBuilder);
     Profile profile = team.join(member);
