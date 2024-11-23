@@ -20,41 +20,47 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Profile {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "team_id")
-	private Team team;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "team_id")
+  private Team team;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  private Member member;
 
-	private String image;
-	private String nickname;
-	private String description;
+  private String image;
+  private String nickname;
+  private String description;
 
-	@Builder
-	public Profile(Team team, Member member, String image, String nickname, String description) {
-		this.team = team;
-		this.member = member;
-		this.image = image;
-		this.nickname = nickname;
-		this.description = description;
-	}
+  @Builder
+  public Profile(
+      Team team,
+      Member member,
+      String image,
+      String nickname,
+      String description
+  ) {
+    this.team = team;
+    this.member = member;
+    this.image = image;
+    this.nickname = nickname;
+    this.description = description;
+  }
 
-	public boolean isOwnedBy(Member member) {
-		return this.member.equals(member);
-	}
+  public boolean isOwnedBy(Member member) {
+    return this.member.equals(member);
+  }
 
-	public static Profile of(Team team, Member member) {
-		return Profile.builder()
-			.team(team)
-			.member(member)
-			.nickname(member.getName())
-			.build();
-	}
+  public static Profile of(Team team, Member member) {
+    return Profile.builder()
+        .team(team)
+        .member(member)
+        .nickname(member.getName())
+        .build();
+  }
 
 }
