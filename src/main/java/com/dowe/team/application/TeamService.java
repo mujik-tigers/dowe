@@ -1,5 +1,6 @@
 package com.dowe.team.application;
 
+import com.dowe.profile.application.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,8 @@ public class TeamService {
   private final ProfileRepository profileRepository;
   private final S3Uploader s3Uploader;
 
+  private final ProfileService profileService;
+
   @Transactional
   public NewTeam create(Long memberId, TeamSettings teamSettings) {
 
@@ -45,26 +48,21 @@ public class TeamService {
 
     log.info(">>> image: {}", image);
 
-    Team teamBuilder = Team.builder()
+    Team team = Team.builder()
         .title(StringUtil.removeExtraSpaces(teamSettings.getTitle()))
         .description(StringUtil.removeExtraSpaces(teamSettings.getDescription()))
         .image(image)
-        .manager(member)
         .build();
 
-    log.info(">>> teamBuilder");
-    log.info(">>> teamBuilder.getId(): {}", teamBuilder.getId());
-    log.info(">>> teamBuilder.getTitle(): {}", teamBuilder.getTitle());
-    log.info(">>> teamBuilder.getDescription(): {}", teamBuilder.getDescription());
-    log.info(">>> teamBuilder.getImage(): {}", teamBuilder.getImage());
-    log.info(">>> teamBuilder.getManager(): {}", teamBuilder.getManager());
-    log.info(">>> teamBuilder.getProfiles(): {}", teamBuilder.getProfiles());
+    Profile defaultManagerProfile = profileService.createDefaultProfile(
+        team,
+        member
+    );
 
-    Team team = teamRepository.save(teamBuilder);
-    Profile profile = team.join(member);
-    profileRepository.save(profile);
+    team.assignManagerProfile(defaultManagerProfile);
+
+    teamRepository.save(team);
 
     return new NewTeam(team.getId());
   }
-
 }

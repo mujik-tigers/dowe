@@ -25,13 +25,13 @@ CREATE TABLE `member_token`
 
 CREATE TABLE `team`
 (
-    `id`          bigint PRIMARY KEY AUTO_INCREMENT,
-    `title`       varchar(20),
-    `description` varchar(30),
-    `image`       varchar(255),
-    `manager_id`  bigint,
-    `created_at`  datetime(3),
-    `updated_at`  datetime(3)
+    `id`                 bigint PRIMARY KEY AUTO_INCREMENT,
+    `title`              varchar(20),
+    `description`        varchar(30),
+    `image`              varchar(255),
+    `manager_profile_id` bigint,
+    `created_at`         datetime(3),
+    `updated_at`         datetime(3)
 );
 
 CREATE TABLE `profile`
