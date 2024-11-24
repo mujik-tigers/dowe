@@ -1,4 +1,4 @@
-package com.dowe.team.dto;
+package com.dowe.participation.dto;
 
 public record PendingRequestTeamInfo(
     String title,

@@ -1,6 +1,6 @@
 package com.dowe.participation.dto.response;
 
-import com.dowe.team.dto.PendingRequestTeamInfo;
+import com.dowe.participation.dto.PendingRequestTeamInfo;
 import java.util.List;
 
 public record GetMyPendingRequestsResponse(
