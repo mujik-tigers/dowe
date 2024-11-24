@@ -1,6 +1,6 @@
 package com.dowe.participation;
 
-public enum RequestStatus {
+public enum ParticipationRequestStatus {
   PENDING,
   ACCEPTED,
   REJECTED
