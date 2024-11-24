@@ -1,5 +1,8 @@
 package com.dowe.participation.dto.response;
 
-public record GetMyPendingRequestsResponse() {
+public record GetMyPendingRequestsResponse(
+    String teamTitle,
+    String image
+) {
 
 }
