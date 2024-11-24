@@ -58,6 +58,7 @@ CREATE TABLE `todo_list`
 CREATE TABLE `participation`
 (
     `id`        bigint primary key auto_increment,
-    `team_id`   bigint not null,
-    `member_id` bigint not null
+    `team_id`   bigint      not null,
+    `member_id` bigint      not null,
+    `status`    varchar(20) not null
 )
