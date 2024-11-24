@@ -2,6 +2,7 @@ package com.dowe.participation;
 
 import com.dowe.member.Member;
 import com.dowe.team.Team;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +13,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -29,5 +32,9 @@ public class Participation {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  @JdbcTypeCode(SqlTypes.VARCHAR)
+  @Column(nullable = false)
+  private ParticipationRequestStatus status;
 
 }
