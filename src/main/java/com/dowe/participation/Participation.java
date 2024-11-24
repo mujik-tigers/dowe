@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -36,5 +37,27 @@ public class Participation {
   @JdbcTypeCode(SqlTypes.VARCHAR)
   @Column(nullable = false)
   private ParticipationRequestStatus status;
+
+  @Builder
+  public Participation(
+      Team team,
+      Member member,
+      ParticipationRequestStatus status
+  ) {
+    this.team = team;
+    this.member = member;
+    this.status = status;
+  }
+
+  public static Participation of(
+      Team team,
+      Member member
+  ) {
+    return Participation.builder()
+        .team(team)
+        .member(member)
+        .status(ParticipationRequestStatus.PENDING)
+        .build();
+  }
 
 }
