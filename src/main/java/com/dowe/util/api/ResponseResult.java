@@ -22,6 +22,9 @@ public enum ResponseResult {
   // Random
   RANDOM_TEAMS_SUCCESS("랜덤 팀 조회에 성공했습니다."),
 
+  // Participation
+  MY_PENDING_REQUESTS_SUCCESS("가입 승인 대기 중인 요청 조회에 성공했습니다."),
+
   // Search
   TEAM_SEARCH_SUCCESS("팀 검색에 성공했습니다.");
 
