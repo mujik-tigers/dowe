@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `team`;
 DROP TABLE IF EXISTS `member_token`;
 DROP TABLE IF EXISTS `member`;
 DROP TABLE IF EXISTS `todo_list`;
+DROP TABLE IF EXISTS `participation`;
 
 CREATE TABLE `member`
 (
