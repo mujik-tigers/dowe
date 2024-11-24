@@ -9,8 +9,7 @@ import com.dowe.team.Team;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-  @Query("SELECT t FROM Team t " +
-      "JOIN t.profiles p " +
+  @Query("SELECT p.team FROM Profile p " +
       "WHERE p.member.id = :memberId")
   List<Team> findAllTeamsByMemberId(Long memberId);
 
