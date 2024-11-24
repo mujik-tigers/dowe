@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `team`;
 DROP TABLE IF EXISTS `member_token`;
 DROP TABLE IF EXISTS `member`;
 DROP TABLE IF EXISTS `todo_list`;
+DROP TABLE IF EXISTS `participation`;
 
 CREATE TABLE `member`
 (
@@ -54,3 +55,11 @@ CREATE TABLE `todo_list`
     `created_at` datetime,
     `updated_at` datetime
 );
+
+CREATE TABLE `participation`
+(
+    `id`        bigint primary key auto_increment,
+    `team_id`   bigint      not null,
+    `member_id` bigint      not null,
+    `status`    varchar(20) not null
+)
