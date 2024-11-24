@@ -37,7 +37,7 @@ public class Profile {
   private String description;
 
   @Builder
-  public Profile(
+  private Profile(
       Team team,
       Member member,
       String image,
@@ -51,15 +51,19 @@ public class Profile {
     this.description = description;
   }
 
-  public boolean isOwnedBy(Member member) {
-    return this.member.equals(member);
-  }
-
-  public static Profile of(Team team, Member member) {
+  public static Profile of(
+      Team team,
+      Member member,
+      String image,
+      String nickname,
+      String description
+  ) {
     return Profile.builder()
         .team(team)
         .member(member)
-        .nickname(member.getName())
+        .image(image)
+        .nickname(nickname)
+        .description(description)
         .build();
   }
 
