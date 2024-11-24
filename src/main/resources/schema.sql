@@ -54,3 +54,10 @@ CREATE TABLE `todo_list`
     `created_at` datetime,
     `updated_at` datetime
 );
+
+CREATE TABLE `participation`
+(
+    `id`        bigint primary key auto_increment,
+    `team_id`   bigint not null,
+    `member_id` bigint not null
+)
