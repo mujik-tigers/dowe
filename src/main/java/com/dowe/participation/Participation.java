@@ -1,5 +1,7 @@
 package com.dowe.participation;
 
+import static com.dowe.participation.ParticipationRequestStatus.*;
+
 import com.dowe.member.Member;
 import com.dowe.team.Team;
 import jakarta.persistence.Column;
@@ -56,8 +58,12 @@ public class Participation {
     return Participation.builder()
         .team(team)
         .member(member)
-        .status(ParticipationRequestStatus.PENDING)
+        .status(PENDING)
         .build();
+  }
+
+  public void deleteRequest() {
+    this.status = DELETED;
   }
 
 }
