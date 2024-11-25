@@ -30,6 +30,7 @@ public class ParticipationService {
 
     List<PendingRequestTeamInfo> myPendingRequestsTeamInfos = myPendingRequests.stream()
         .map(participation -> new PendingRequestTeamInfo(
+            participation.getId(),
             participation.getTeam().getTitle(),
             participation.getTeam().getImage()
         ))
