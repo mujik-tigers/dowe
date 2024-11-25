@@ -24,6 +24,7 @@ public enum ResponseResult {
 
   // Participation
   MY_PENDING_REQUESTS_SUCCESS("가입 승인 대기 중인 요청 조회에 성공했습니다."),
+  DELETE_PENDING_REQUEST_SUCCESS("가입 승인 대기 중인 요청 삭제에 성공했습니다."),
 
   // Search
   TEAM_SEARCH_SUCCESS("팀 검색에 성공했습니다.");
