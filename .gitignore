@@ -37,3 +37,7 @@ out/
 .vscode/
 
 application*.yml
+
+### mapstruct ###
+
+/src/main/generated/
