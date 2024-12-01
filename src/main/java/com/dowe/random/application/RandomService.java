@@ -6,6 +6,7 @@ import com.dowe.elasticsearch.mapper.TeamMapper;
 import com.dowe.exception.member.MemberNotFoundException;
 import com.dowe.member.Member;
 import com.dowe.member.infrastructure.MemberRepository;
+import com.dowe.profile.infrastructure.ProfileRepository;
 import com.dowe.random.dto.response.RandomTeamsResponse;
 import com.dowe.team.dto.TeamOutline;
 import com.dowe.team.infrastructure.TeamRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RandomService {
 
+  private final ProfileRepository profileRepository;
   private final TeamRepository teamRepository;
   private final MemberRepository memberRepository;
   private final TeamMapper teamMapper;
@@ -38,7 +40,10 @@ public class RandomService {
 
     List<TeamOutline> randomTeamOutlines = teamRepository.findTeamsNotJoinedByMemberWithOffset(memberId, randomOffset)
         .stream()
-        .map(teamMapper::toTeamOutline)
+        .map(team -> {
+          int currentPeople = profileRepository.countByTeamId(team.getId());
+          return teamMapper.toTeamOutline(team, currentPeople);
+        })
         .toList();
 
     return RandomTeamsResponse.from(randomTeamOutlines);
