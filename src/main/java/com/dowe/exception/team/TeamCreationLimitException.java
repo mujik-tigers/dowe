@@ -1,8 +1,11 @@
 package com.dowe.exception.team;
 
-public class TeamCreationLimitException extends RuntimeException {
+import com.dowe.exception.CustomException;
+import com.dowe.exception.ErrorType;
 
-  public TeamCreationLimitException(String message) {
-    super(message);
+public class TeamCreationLimitException extends CustomException {
+
+  public TeamCreationLimitException() {
+    super(ErrorType.TEAM_CREATION_LIMIT_EXCEPTION);
   }
 }
