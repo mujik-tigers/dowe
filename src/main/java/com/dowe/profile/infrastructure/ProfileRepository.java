@@ -8,4 +8,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
   long countByMemberId(Long memberId);
 
+  int countByTeamId(Long teamId);
 }

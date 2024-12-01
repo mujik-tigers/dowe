@@ -3,6 +3,7 @@ package com.dowe.member.application;
 import static com.dowe.util.RandomUtil.*;
 
 import com.dowe.elasticsearch.mapper.TeamMapper;
+import com.dowe.profile.infrastructure.ProfileRepository;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class MemberService {
 
   private final TeamMapper teamMapper;
 
+  private final ProfileRepository profileRepository;
   private final MemberRepository memberRepository;
   private final MemberCodeStorage memberCodeStorage;
   private final TeamRepository teamRepository;
@@ -81,7 +83,10 @@ public class MemberService {
 
     List<TeamOutline> teamOutlines = teamRepository.findAllTeamsByMemberId(member.getId())
         .stream()
-        .map(teamMapper::toTeamOutline)
+        .map(team -> {
+          int currentPeople = profileRepository.countByTeamId(team.getId());
+          return teamMapper.toTeamOutline(team, currentPeople);
+        })
         .toList();
 
     return FetchMyTeamResponse.from(teamOutlines);
