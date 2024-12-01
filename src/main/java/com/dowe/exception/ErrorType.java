@@ -18,6 +18,7 @@ public enum ErrorType {
 	MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "멤버가 존재하지 않습니다"),
 
 	// Team
+	TEAM_CREATION_LIMIT_EXCEPTION(HttpStatus.CONFLICT, "사용자가 이미 5개의 팀에 참여 중이라 새로운 팀을 생성할 수 없습니다."),
 	MEMBER_IS_ALREADY_IN_TEAM(HttpStatus.BAD_REQUEST, "이미 소속된 팀입니다"),
 	TEAM_IS_FULL(HttpStatus.BAD_REQUEST, "팀이 가득 차 참여할 수 없습니다");
 
