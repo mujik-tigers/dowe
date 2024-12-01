@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface TeamMapper {
 
   @Mapping(target = "maxPeople", expression = "java(AppConstants.TEAM_MAX_SIZE)")
-  TeamOutline toTeamOutline(Team team);
+  @Mapping(target = "currentPeople", source = "currentPeople")
+  TeamOutline toTeamOutline(Team team, int currentPeople);
 
 }
