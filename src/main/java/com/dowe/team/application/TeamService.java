@@ -1,5 +1,8 @@
 package com.dowe.team.application;
 
+import static com.dowe.util.AppConstants.*;
+
+import com.dowe.exception.team.TeamCreationLimitException;
 import com.dowe.profile.application.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,7 +12,6 @@ import com.dowe.exception.member.MemberNotFoundException;
 import com.dowe.member.Member;
 import com.dowe.member.infrastructure.MemberRepository;
 import com.dowe.profile.Profile;
-import com.dowe.profile.infrastructure.ProfileRepository;
 import com.dowe.team.Team;
 import com.dowe.team.dto.NewTeam;
 import com.dowe.team.dto.TeamSettings;
@@ -28,7 +30,6 @@ public class TeamService {
 
   private final TeamRepository teamRepository;
   private final MemberRepository memberRepository;
-  private final ProfileRepository profileRepository;
   private final S3Uploader s3Uploader;
 
   private final ProfileService profileService;
@@ -40,6 +41,13 @@ public class TeamService {
 
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
+
+    long profileCount = profileService.countProfiles(member.getId());
+    log.info(">>> ProfileService create() profileCount for member {} : {}", memberId, profileCount);
+
+    if (profileCount == MAXIMUM_TEAM_COUNT) {
+      throw new TeamCreationLimitException();
+    }
 
     String image = null;
     if (teamSettings.getImage() != null && !teamSettings.getImage().isEmpty()) {

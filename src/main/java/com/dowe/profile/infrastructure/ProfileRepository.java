@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.dowe.profile.Profile;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
+
+  long countByMemberId(Long memberId);
+
 }

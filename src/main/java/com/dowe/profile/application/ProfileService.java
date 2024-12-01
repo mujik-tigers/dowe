@@ -33,4 +33,10 @@ public class ProfileService {
     return profileRepository.save(defaultProfile);
   }
 
+  public long countProfiles(
+      Long memberId
+  ) {
+    return profileRepository.countByMemberId(memberId);
+  }
+
 }
