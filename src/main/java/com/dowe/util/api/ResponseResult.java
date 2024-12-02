@@ -18,6 +18,7 @@ public enum ResponseResult {
 
   // Team
   TEAM_CREATE_SUCCESS("팀 생성에 성공했습니다"),
+  TEAM_IMAGE_ASSIGN_SUCCESS("팀 이미지 저장에 성공했습니다."),
 
   // Random
   RANDOM_TEAMS_SUCCESS("랜덤 팀 조회에 성공했습니다."),
