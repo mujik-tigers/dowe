@@ -103,4 +103,11 @@ public class TeamService {
 
   }
 
+  private boolean isTeamManager(
+      Team team,
+      Long memberId
+  ) {
+    Member manager = team.getManagerProfile().getMember();
+    return manager.getId().equals(memberId);
+  }
 }
