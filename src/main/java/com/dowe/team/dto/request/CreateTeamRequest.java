@@ -1,5 +1,8 @@
 package com.dowe.team.dto.request;
 
-public record CreateTeamRequest() {
+public record CreateTeamRequest(
+    String title,
+    String description
+) {
 
 }
