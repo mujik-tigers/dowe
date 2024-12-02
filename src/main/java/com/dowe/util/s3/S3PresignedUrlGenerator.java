@@ -30,6 +30,7 @@ public class S3PresignedUrlGenerator {
         .bucket(bucketName)
         .key(key)
         .acl("public-read")
+        .contentType("image/png")
         .build();
 
     PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
