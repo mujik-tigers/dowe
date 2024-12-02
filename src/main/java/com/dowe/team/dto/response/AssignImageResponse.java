@@ -1,5 +1,7 @@
 package com.dowe.team.dto.response;
 
-public record AssignImageResponse() {
+public record AssignImageResponse(
+    Long teamId
+) {
 
 }
