@@ -29,6 +29,7 @@ public class S3PresignedUrlGenerator {
     PutObjectRequest putObjectRequest = PutObjectRequest.builder()
         .bucket(bucketName)
         .key(key)
+        .acl("public-read")
         .build();
 
     PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
