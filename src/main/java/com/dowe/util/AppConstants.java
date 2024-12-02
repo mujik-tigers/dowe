@@ -27,4 +27,7 @@ public final class AppConstants {
   public static final int NO_MORE_LAST_HIT_OFFSET = 1;
   public static final int HAS_MORE_LAST_HIT_OFFSET = 2;
 
+  public static final String TEAM_IMAGE_DIRECTORY = "team/";
+  public static final String TEAM_IMAGE_PREFIX = "team_";
+
 }

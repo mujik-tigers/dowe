@@ -37,16 +37,18 @@ public class Team extends BaseEntity {
   @Builder
   public Team(
       String title,
-      String description,
-      String image
+      String description
   ) {
     this.title = title;
     this.description = description;
-    this.image = image;
   }
 
   public void assignManagerProfile(Profile profile) {
     this.managerProfile = profile;
+  }
+
+  public void assignImage(String image) {
+    this.image = image;
   }
 
 }
