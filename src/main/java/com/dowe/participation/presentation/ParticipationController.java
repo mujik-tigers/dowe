@@ -42,7 +42,6 @@ public class ParticipationController {
       @Login Long memberId,
       @PathVariable Long requestId
   ) {
-    log.info(">>> ParticipationController deleteMyPendingRequest()");
 
     return ResponseEntity.ok()
         .body(ApiResponse.ok(
